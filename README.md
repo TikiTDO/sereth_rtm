@@ -52,7 +52,7 @@ json_spec p_name[, path] do
 
   # Sub-spec nodes
   key_value_definition do
-    # Unnamed JSON Perspective definition in the context of resultant object
+    # Unnamed JSON Spec definition in the context of resultant object
   end #=> "key_value_name": {#{json_spec_inst.parse(val)}}
       #=> "key_value_name_arr": [{#{json_spec_inst.parse(val)}}]
 
@@ -125,12 +125,15 @@ data_inst.to_json(spec: ex4) #=> {
   # "others": [other1.gen(1, 2).to_json, other2.gen(1, 2).to_json...]}
 ```
 
-  Note: If not denoted, the entire collection will be parsed into a single value and 
+## Sub-objects
+  **Note*** - If not denoted, the entire collection will be parsed into a single value and 
   will be passed to the instance handler.
 ```ruby
 # WRONG Definition
 json_spec :ex5 do
-  nodes
+  nodes Array do
+    # This will 
+  end
 end
 
 # Result - Note the quoted array
