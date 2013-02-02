@@ -87,7 +87,7 @@ data_inst.to_json(spec: ex2) #=> {"id": "#{data_inst.other_id.to_json}"}
 
 ## Collections
   Collections must be denoted as such by speficying the Array data type after the node 
-  name.
+  name. 
 ```ruby
 # Definition
 json_spec :ex3 do
@@ -96,6 +96,19 @@ end
 
 # Result
 data_inst.to_json(spec: ex3) #=> {"nodes": [node1.to_json, node2.to_json...]}  
+```
+  If a specified value is not an array, it will be added to a single-element Array.
+```ruby
+# Assume
+data_inst.key = "asdf"
+
+# Definition
+json_spec :ex3_1 do
+  key Array
+end
+
+# Result
+data_inst.to_json(spec: ex3_1) #=> "{"key": ["asdf"]}"
 ```
 
   Collection generation may be extended with blocks or generator functions.
