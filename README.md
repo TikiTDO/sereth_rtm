@@ -9,7 +9,7 @@
   
 # Result
 
-  A perspective is defined on a ruby model. While this may be against Rails design
+  A spec is defined on a ruby model. While this may be against Rails design
   principles, there is no easy way to accomplish all required features in views.
 
   > TODO: Allow for imports from views into the model classes
@@ -22,25 +22,25 @@ class Data
   # ...
 
   # Perspective initializations
-  json_perspective :name[, path] do
-    # Configuration for data_inst.as_json(:perspective => :name)
+  json_spec :name[, path] do
+    # Configuration for data_inst.as_json(:spec => :name)
   end
 end
 ```
 
 ### Perspective Path Gotcha
-  The system will store all names perspective at a given path. If path is not specified
+  The system will store all names spec at a given path. If path is not specified
   it will try to generate it from the collection name of the data object, or failing that
   the class name of the object.
 
-  This means that any perspectives used in objects without collection names, and without
-  a hard-coded path will overwrite other similarly named perspectives.
+  This means that any specs used in objects without collection names, and without
+  a hard-coded path will overwrite other similarly named specs.
 
 
 ## API Reference
-  Note, all values pass through `.to_json(perspective: p_name)` unless otherwise noted
+  Note, all values pass through `.to_json(spec: p_name)` unless otherwise noted
 ```ruby
-json_perspective p_name[, path] do
+json_spec p_name[, path] do
   ## Nodes
   # Key-Value Nodes
   node_name #=> "node_name": #{inst.node_name}
@@ -50,39 +50,39 @@ json_perspective p_name[, path] do
   node_name Array, :gen #=> "node_name": [#{inst.node_name.each(&:gen)}]
   node_name Array, proc #=> "node_name": [#{inst.node_name.each(&proc)}]
 
-  # Sub-perspective nodes
+  # Sub-spec nodes
   key_value_definition do
     # Unnamed JSON Perspective definition in the context of resultant object
-  end #=> "key_value_name": {#{json_perspective_inst.parse(val)}}
-      #=> "key_value_name_arr": [{#{json_perspective_inst.parse(val)}}]
+  end #=> "key_value_name": {#{json_spec_inst.parse(val)}}
+      #=> "key_value_name_arr": [{#{json_spec_inst.parse(val)}}]
 
   ## Options
   # Overrides
-  json_options.override, p_name[, path] # Apply new definitions over existing perspective
+  json_options.override, p_name[, path] # Apply new definitions over existing spec
 end
 ```
 
 ## Basic Nodes
-  Raw data nodes can be named within the json_perspective block
+  Raw data nodes can be named within the json_spec block
 ```ruby
 # Definition
-json_perspective :ex1 do
+json_spec :ex1 do
   id
 end
 
 # Result
-data_inst.to_json(perspective: ex1) #=> {"id": "#{data_inst.id.to_json}"}  
+data_inst.to_json(spec: ex1) #=> {"id": "#{data_inst.id.to_json}"}  
 ```
 
   More fine grained control of the node value can be achieved with lambdas
 ```ruby
 # Definition
-json_perspective :ex2 do
+json_spec :ex2 do
   id lambda {self.other_id}
 end
 
 # Result
-data_inst.to_json(perspective: ex2) #=> {"id": "#{data_inst.other_id.to_json}"}  
+data_inst.to_json(spec: ex2) #=> {"id": "#{data_inst.other_id.to_json}"}  
 ```
 
 ## Collections
@@ -90,24 +90,24 @@ data_inst.to_json(perspective: ex2) #=> {"id": "#{data_inst.other_id.to_json}"}
   name.
 ```ruby
 # Definition
-json_perspective :ex3 do
+json_spec :ex3 do
   nodes Array
 end
 
 # Result
-data_inst.to_json(perspective: ex3) #=> {"nodes": [node1.to_json, node2.to_json...]}  
+data_inst.to_json(spec: ex3) #=> {"nodes": [node1.to_json, node2.to_json...]}  
 ```
 
   Collection generation may be extended with blocks or generator functions.
 ```ruby
 # Definition
-json_perspective :ex4 do
+json_spec :ex4 do
   nodes Array, :get
   others Array, lambda {gen(1, 2)}
 end
 
 # Result
-data_inst.to_json(perspective: ex4) #=> {
+data_inst.to_json(spec: ex4) #=> {
   # "nodes": [node1.get.to_json, node2.get.to_json...],
   # "others": [other1.gen(1, 2).to_json, other2.gen(1, 2).to_json...]}
 ```
@@ -116,12 +116,12 @@ data_inst.to_json(perspective: ex4) #=> {
   will be passed to the instance handler.
 ```ruby
 # WRONG Definition
-json_perspective :ex5 do
+json_spec :ex5 do
   nodes
 end
 
 # Result - Note the quoted array
-# data_inst.to_json(perspective: ex4) #=> {"nodes": "[node1, node2...]"}
+# data_inst.to_json(spec: ex4) #=> {"nodes": "[node1, node2...]"}
 ```
 
 
