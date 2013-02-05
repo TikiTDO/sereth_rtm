@@ -9,38 +9,43 @@ class Sereth::JsonSpecData
   end
 
   # Queue up a node_name accessor
-  def command!(node_name, type_or_proc, proc = nil)
-    # Instantiate Parameters
-    if proc
-      type = type_or_proc
-    else
-      type = Object
-      proc = type_or_proc
-    end
-
-    # Instantiate Names
-    node_name = node_name.to_s
-    node_method = node_name.to_sym
-
+  def command!(node_name, type, proc)
     # Add the command to the queue
-    @command_queue.push(node) 
+    @command_queue.push(node_name)
 
     # Generate the command on the spec object
     case type
-    when Object
+    when nil
       # Handle normal objects
-      command = command.to_sym
-      class << spec
+      class << @spec
         # Define runner forproc handler
-        define_method(command) do |inst|
-          "{\"#{node_name}\": #{inst.instance_exec(&proc).to_json}"
-          [node_name, inst.instance_exec(&proc)]
-        end if proc
+        if proc
+          define_method(node_name) do |inst|
+            "{\"#{node_name}\": #{inst.instance_exec(&proc).to_json}"
+          end
+        else
+          define_method(node_name) do |inst|
+            "{\"#{node_name}\": #{inst.instance_exec(&proc).to_json}"
+          end
+        end
+
       end
     when Array
       # Handle collections
 
+    else
+      # Handle invalid types
+      raise "Invalid json_spec type: #{type}"
     end
+  end
+
+  def object!(node_name, type, proc)
+
+  end
+
+  # Iterate over all commands defined in this object, and all commands in super-objects
+  def each_command
+
   end
 
   def override!(spec)
@@ -60,9 +65,13 @@ class Sereth::JsonSpecData
     ret += '}'
   end
 
+  def respond_to_missing?(node_name, include_private = false)
+
+  end
+
   # Pass undefined handlers to the override spec
   def method_missing(method, *args, &block)
-    if @override_spec 
+    if @override_spec
       @override_spec.send(method, *args, &block)
     else
       super

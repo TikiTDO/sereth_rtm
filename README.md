@@ -65,7 +65,7 @@ scripts and API editors
 ##
   Note, all values pass through `.to_json` unless otherwise noted
 ```ruby
-json_spec p_name[, path] do
+json_spec spec_name do
   ## Nodes
   # Key-Value Nodes
   node_name #=> "node_name": #{inst.node_name}
@@ -78,17 +78,17 @@ json_spec p_name[, path] do
 
   # Key-Object Nodes (inst.node_name NOT Collection)
   node_name do ... end 
-    #=> "node_name": {#{json_spec.from(node_inst.node_name, &block)}}
+    #=> "node_name": {#{json_spec.from(&block).apply(inst.node_name)}}
 
   # Key-Object Nodes (inst.node_name IS Collection, or is forced to collection)
   node_name do ... end 
   node_name Array do ... end 
-    #=> "node_name": [{#{node_inst.node_name.each {|item| json_spec.from(item, &block)}}}]
+    #=> "node_name": [#{inst.node_name.each {|item| json_spec.from(&block).apply(item)}}]
 
   ## Operations
   default! :node_name, (value or lambda) #=> "node_name": "#{value or lambda.call}"
-  extends! (path or :p_name)[, :p_name] # Utilize a spec for nodes specified there and not in this context
-  cond! lambda do ... end # Executes the lambda in the context of the inst, then runs any present block if the lambda return value evalutates to true
+  extends! (DataClass or "collection_name" or :spec_name)[, :spec_name] # Utilize a spec for nodes specified there and not in this context
+  cond! lambda do ... end # Executes the lambda in the context of the inst, then runs any present block in the current definition context if the lambda return value evalutates to true
 end
 ```
 
@@ -291,6 +291,8 @@ end
 # Result
 second_inst.to_json(spec: :obj_ext_path) #=> {"first": {"key": 1}}
 ```
+
+***Important*** - Each block may be extended only once. New extensions override the prior ones.
 
 ## Conditionals - Execution break-in.
   Occasionally some nodes may be conditionally required based on some outside criteria.
