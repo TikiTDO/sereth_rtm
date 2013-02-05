@@ -12,7 +12,9 @@
   A spec is defined on a ruby model. While this may be against Rails design
   principles, there is no easy way to accomplish all required features in views.
 
-  > TODO: Allow for imports from views into the model classes
+  > TODO: Allow for imports from views into the model classes. On access to the
+  > to_json method compile all views for this object, and cache these values to
+  > the model proper.
 
 ## Usage
 ### Initialization
