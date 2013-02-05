@@ -21,18 +21,37 @@ class Sereth::JsonSpecData
         # Define runner forproc handler
         if proc
           define_method(node_name) do |inst|
-            "{\"#{node_name}\": #{inst.instance_exec(&proc).to_json}"
+            "{\"#{node_name}\": #{inst.instance_eval(&proc).to_json}"
           end
         else
           define_method(node_name) do |inst|
-            "{\"#{node_name}\": #{inst.instance_exec(&proc).to_json}"
+            "{\"#{node_name}\": #{inst.send(node_name).to_json}"
           end
         end
-
       end
     when Array
       # Handle collections
+      class << @spec
+        # Define runner forproc handler
+        if proc
+          define_method(node_name) do |inst|
+            pre_parse = inst.instance_eval(&proc)
+            pre_parse = [] if pre_parse.nil?
+            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
+            parsed = pre_parse.map{|item| "#{item.to_json}"}
+            "{\"#{node_name}\": [#{parsed.join(",")}]"
+          end
+        else
+          define_method(node_name) do |inst|
+            pre_parse = inst.send(node_name)
+            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
+
+            parsed = pre_parse.map{|item| "#{item.to_json}"}
+            "{\"#{node_name}\": [#{parsed.join(",")}]"
+          end
+        end
+      end
     else
       # Handle invalid types
       raise "Invalid json_spec type: #{type}"

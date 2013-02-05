@@ -69,24 +69,23 @@ json_spec spec_name do
   ## Nodes
   # Key-Value Nodes
   node_name #=> "node_name": #{inst.node_name}
-  node_name lambda #=> "node_name": #{inst.instance_exec(&lambda)}
+  node_name :gen #=> "node_name": #{inst.gen)}
+  node_name lambda #=> "node_name": #{inst.instance_eval(&lambda)}
 
   # Key-Array Nodes
   node_name Array #=> "node_name": [#{inst.node_name.each {|val| val}}]
   node_name Array, :gen #=> "node_name": [#{inst.node_name.each(&:gen)}]
   node_name Array, lambda #=> "node_name": [#{inst.node_name.each(&lambda)}]
 
-  # Key-Object Nodes (inst.node_name NOT Collection)
+  # Key-Object Nodes 
   node_name do ... end 
     #=> "node_name": {#{json_spec.from(&block).apply(inst.node_name)}}
 
-  # Key-Object Nodes (inst.node_name IS Collection, or is forced to collection)
-  node_name do ... end 
+  # Key-Object Collections
   node_name Array do ... end 
     #=> "node_name": [#{inst.node_name.each {|item| json_spec.from(&block).apply(item)}}]
 
   ## Operations
-  default! :node_name, (value or lambda) #=> "node_name": "#{value or lambda.call}"
   extends! (DataClass or "collection_name" or :spec_name)[, :spec_name] # Utilize a spec for nodes specified there and not in this context
   cond! lambda do ... end # Executes the lambda in the context of the inst, then runs any present block in the current definition context if the lambda return value evalutates to true
 end
@@ -113,11 +112,28 @@ data_inst.to_json(spec: basic)
 # Definition
 json_spec :basic_proc do
   id lambda {other_id}
+  tag :email
 end
 
 # Result
 data_inst.to_json(spec: basic_proc) 
-  #=> {"id": "#{data_inst.other_id.to_json}"}  
+  #=> {
+    # "id": "#{data_inst.other_id.to_json}",  
+    # "tag": #{inst.email.to_json}}
+```
+
+### Default Values
+The Dynamic Node generation may also supply default values
+
+```ruby
+# Definition
+json_spec :basic_def do
+  word lambda {"hello"}
+end
+
+# Result
+data_inst.to_json(spec: basic_def) 
+  #=> {"word": #{"hello".to_json}}
 ```
 
 ##
@@ -156,13 +172,13 @@ data_inst.to_json(spec: col_non_array) #=> "{"key": ["asdf".to_json]}"
 # Definition
 json_spec :col_block do
   nodes Array, :get
-  others Array, lambda {gen(1, 2)}
+  others Array, lambda {gen_other}
 end
 
 # Result
 data_inst.to_json(spec: col_block) #=> {
   # "nodes": [node1.get.to_json, node2.get.to_json...],
-  # "others": [other1.gen(1, 2).to_json, other2.gen(1, 2).to_json...]}
+  # "others": [gen_other1.to_json, gen_other2.to_json...]}
 ```
 
 ##

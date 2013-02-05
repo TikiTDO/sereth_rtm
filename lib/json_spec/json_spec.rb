@@ -26,7 +26,7 @@ class Sereth::JsonSpecs
   end
   
   # Remove all unnecessary methods
-  core_methods = %w(__id__ __send__ instance_eval instance_exec nil? is_a? class)
+  core_methods = %w(__id__ __send__ instance_eval instance_eval nil? is_a? class)
   instance_methods.each {|m| undef_method(m) unless core_methods.include?(m.to_s)}
 
   private
@@ -55,7 +55,7 @@ class Sereth::JsonSpecs
 
       # Handle object nodes
       subnode = self.class.new(@path, @name, @data_store.subnode!)
-      subnode.instance_exec(&block)
+      subnode.instance_eval(&block)
     else
       # Add the command to the queue for execution
       @data_store.command!(node_name, type, proc)
