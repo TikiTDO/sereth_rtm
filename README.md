@@ -90,12 +90,12 @@ data_inst.to_json(spec: ex2) #=> {"id": "#{data_inst.other_id.to_json}"}
   name. 
 ```ruby
 # Definition
-json_spec :ex3 do
+json_spec :col do
   nodes Array
 end
 
 # Result
-data_inst.to_json(spec: ex3) #=> {"nodes": [node1.to_json, node2.to_json...]}  
+data_inst.to_json(spec: col) #=> {"nodes": [node1.to_json, node2.to_json...]}  
 ```
   If a specified value is not an array, it will be added to a single-element Array.
 ```ruby
@@ -103,29 +103,39 @@ data_inst.to_json(spec: ex3) #=> {"nodes": [node1.to_json, node2.to_json...]}
 data_inst.key = "asdf"
 
 # Definition
-json_spec :ex3_1 do
+json_spec :col_non_array do
   key Array
 end
 
 # Result
-data_inst.to_json(spec: ex3_1) #=> "{"key": ["asdf"]}"
+data_inst.to_json(spec: col_non_array) #=> "{"key": ["asdf"]}"
 ```
 
   Collection generation may be extended with blocks or generator functions.
 ```ruby
 # Definition
-json_spec :ex4 do
+json_spec :col_block do
   nodes Array, :get
   others Array, lambda {gen(1, 2)}
 end
 
 # Result
-data_inst.to_json(spec: ex4) #=> {
+data_inst.to_json(spec: col_block) #=> {
   # "nodes": [node1.get.to_json, node2.get.to_json...],
   # "others": [other1.gen(1, 2).to_json, other2.gen(1, 2).to_json...]}
 ```
 
-## Sub-objects
+
+## Objects
+  New objects may be embedded in an existing spec as blocks.
+
+```ruby
+json_spec :obj do
+
+end
+``` 
+
+### Sub-objects
   **Note*** - If not denoted, the entire collection will be parsed into a single value and 
   will be passed to the instance handler.
 ```ruby
@@ -139,11 +149,3 @@ end
 # Result - Note the quoted array
 # data_inst.to_json(spec: ex4) #=> {"nodes": "[node1, node2...]"}
 ```
-
-
-
-  # node_name [data_type] [populate_command]
-  #   Valid data types: Hash (default), String, Numeric, Array
-  #   Populate command: Method used to populate the node
-  #
-  #   
