@@ -78,15 +78,17 @@ json_spec p_name[, path] do
 
   # Key-Object Nodes (inst.node_name NOT Collection)
   node_name do ... end 
-    #=> "node_name": "{#{json_spec.from(node_inst.node_name, &block)}}""
+    #=> "node_name": {#{json_spec.from(node_inst.node_name, &block)}}
 
-  # Key-Object Nodes (inst.node_name IS Collection)
+  # Key-Object Nodes (inst.node_name IS Collection, or is forced to collection)
   node_name do ... end 
-    #=> "node_name": "{#{node_inst.node_name {|item| json_spec.from(item, &block)}}}""
+  node_name Array do ... end 
+    #=> "node_name": [{#{node_inst.node_name.each {|item| json_spec.from(item, &block)}}}]
 
   ## Operations
   default! :node_name, (value or lambda) #=> "node_name": "#{value or lambda.call}"
   extends! (path or :p_name)[, :p_name] # Utilize a spec for nodes specified there and not in this context
+  cond! lambda do ... end # Executes the lambda in the context of the inst, then runs any present block if the lambda return value evalutates to true
 end
 ```
 
