@@ -7,7 +7,7 @@
   The library may also be used to generate examples of blank data types to populate
   scripts, and to export to web-based API editors.
   
-# Result
+## Design Considerations
 
   A spec is defined on a ruby model. While this may be against Rails design
   principles, there is no easy way to accomplish all required features in views.
