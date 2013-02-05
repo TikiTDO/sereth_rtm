@@ -66,23 +66,23 @@ end
   Raw data nodes can be named within the json_spec block
 ```ruby
 # Definition
-json_spec :ex1 do
+json_spec :basic do
   id
 end
 
 # Result
-data_inst.to_json(spec: ex1) #=> {"id": "#{data_inst.id.to_json}"}  
+data_inst.to_json(spec: basic) #=> {"id": "#{data_inst.id.to_json}"}  
 ```
 
   More fine grained control of the node value can be achieved with lambdas
 ```ruby
 # Definition
-json_spec :ex2 do
+json_spec :basic_proc do
   id lambda {self.other_id}
 end
 
 # Result
-data_inst.to_json(spec: ex2) #=> {"id": "#{data_inst.other_id.to_json}"}  
+data_inst.to_json(spec: basic_proc) #=> {"id": "#{data_inst.other_id.to_json}"}  
 ```
 
 ## Collections
