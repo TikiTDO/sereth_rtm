@@ -70,12 +70,12 @@ json_spec spec_name do
   # Key-Value Nodes
   node_name #=> "node_name": #{inst.node_name}
   node_name :gen #=> "node_name": #{inst.gen)}
-  node_name lambda #=> "node_name": #{inst.instance_eval(&lambda)}
+  node_name proc #=> "node_name": #{inst.instance_eval(&proc)}
 
   # Key-Array Nodes
   node_name Array #=> "node_name": [#{inst.node_name.each {|val| val}}]
   node_name Array, :gen #=> "node_name": [#{inst.node_name.each(&:gen)}]
-  node_name Array, lambda #=> "node_name": [#{inst.node_name.each(&lambda)}]
+  node_name Array, proc #=> "node_name": [#{inst.node_name.each(&proc)}]
 
   # Key-Object Nodes 
   node_name do ... end 
@@ -86,8 +86,9 @@ json_spec spec_name do
     #=> "node_name": [#{inst.node_name.each {|item| json_spec.from(&block).apply(item)}}]
 
   ## Operations
+  override! :node_name, ... # Same functionality as above, but allows for restricted names
   extends! (DataClass or "collection_name" or :spec_name)[, :spec_name] # Utilize a spec for nodes specified there and not in this context
-  cond! lambda do ... end # Executes the lambda in the context of the inst, then runs any present block in the current definition context if the lambda return value evalutates to true
+  cond! proc do ... end # Executes the proc in the context of the inst, then runs any present block in the current definition context if the proc return value evalutates to true
 end
 ```
 
@@ -107,11 +108,11 @@ data_inst.to_json(spec: basic)
 ```
 
 ### Dynamic Nodes
-  More fine grained control of the node value can be achieved with lambdas
+  More fine grained control of the node value can be achieved with procs
 ```ruby
 # Definition
 json_spec :basic_proc do
-  id lambda {other_id}
+  id proc {other_id}
   tag :email
 end
 
@@ -128,7 +129,7 @@ The Dynamic Node generation may also supply default values
 ```ruby
 # Definition
 json_spec :basic_def do
-  word lambda {"hello"}
+  word proc {"hello"}
 end
 
 # Result
@@ -172,7 +173,7 @@ data_inst.to_json(spec: col_non_array) #=> "{"key": ["asdf".to_json]}"
 # Definition
 json_spec :col_block do
   nodes Array, :get
-  others Array, lambda {gen_other}
+  others Array, proc {gen_other}
 end
 
 # Result
@@ -200,7 +201,7 @@ json_spec :obj do
   key do
     node_name_a
   end
-  other_key lambda {real_other_key} do
+  other_key proc {real_other_key} do
     node_name_b
   end
   no_key do 
@@ -234,7 +235,7 @@ data_inst.to_json(spec: :obj_arr)
 ### Glue Object
   Occasionally you may wish to create an object key for an existing attribute, but keep
   the context of the previous data object. There are two ways of doing this. You may
-  use the lambda object definition, or the special glue! command.
+  use the proc object definition, or the special glue! command.
 
 ```ruby
 # Assume
@@ -244,7 +245,7 @@ end
 
 # Definition
 json_spec :obj_glue do
-  key_a lambda {self} do
+  key_a proc {self} do
     node_name_a
   end
   glue! :key_b do
@@ -258,7 +259,7 @@ data_inst.to_json(spec: obj) #=> "{
   #"key_b": {"node_name_b: "#{data_inst.node_name_b.to_json}"}
 ```
 
-### Extension
+### Object Extension
   If another json_spec defines some or all of the behaviour needed for a node, that 
   spec can be used as a starting basis for a new spec. The extended pec will provide
   provide all configuration values not otherwise overridden in the new spec.
@@ -310,7 +311,26 @@ second_inst.to_json(spec: :obj_ext_path) #=> {"first": {"key": 1}}
 
 ***Important*** - Each block may be extended only once. New extensions override the prior ones.
 
+##
+## Overrides
+##
+  Sometimes a node_name will be defined in the global ruby function scope. In this situation the
+  override method allows direct access to above features using a hard-coded function.
+
+```ruby
+# Definition
+json_spec :ovr do
+  override! :print
+end
+
+# Result
+data_inst.to_json(spec: :ovr) 
+#=> {"print": #{data_inst.print.to_json}
+```
+
+##
 ## Conditionals - Execution break-in.
+##
   Occasionally some nodes may be conditionally required based on some outside criteria.
   For this purpose the json_spec supports operators to break directly into the 
   execution of the spec generator.
@@ -319,7 +339,7 @@ second_inst.to_json(spec: :obj_ext_path) #=> {"first": {"key": 1}}
 ```ruby
 # Definition
 json_spec :cond do
-  cond!(lambda {some_check}) do
+  cond!(proc {some_check}) do
     key
   end
 end

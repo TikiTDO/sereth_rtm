@@ -1,3 +1,3 @@
-require 'json_spec/json_spec'
-require 'json_spec/json_data'
-require 'json_spec/json_spec_includes'
+require_relative 'json_spec/json_spec_generator'
+require_relative 'json_spec/json_spec_data'
+require_relative 'json_spec/json_spec_includes'
