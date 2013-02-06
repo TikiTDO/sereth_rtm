@@ -89,7 +89,7 @@ json_spec spec_name do
   ## Operations
   override! :node_name, ... # Same functionality as above, but allows for restricted names
   extends! (DataClass or "collection_name" or :spec_name)[, :spec_name] # Utilize a spec for nodes specified there and not in this context
-  cond! proc do ... end # Executes the proc in the context of the inst, then runs any present block in the current definition context if the proc return value evalutates to true
+  if! proc do ... end # Executes the proc in the context of the inst, then runs any present block in the current definition context if the proc return value evalutates to true
 end
 ```
 
@@ -340,7 +340,7 @@ data_inst.to_json(spec: :ovr)
 ```ruby
 # Definition
 json_spec :cond do
-  cond!(proc {some_check}) do
+  if!(proc {some_check}) do
     key
   end
 end
