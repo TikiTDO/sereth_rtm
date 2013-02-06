@@ -1,8 +1,9 @@
 # Sereth JSON Perspectives
 
-  Sereth JSON Perspectives is a rails plugin which hooks into any existing data store
-  such as ActiveRecord, Mongoid, or even bare classes, and allows a developer to
-  define a set of JSON message types to be exported to a client.
+  Sereth JSON Perspectives is a rails plugin based on the idea of treating models like
+  API objects exported through JSON. It breaks with the rails convention of treating
+  these objects as views, and instead defines different perspectives as core features
+  of the data model. 
 
   The library may also be used to generate examples of blank data types to populate
   scripts, and to export to web-based API editors.
