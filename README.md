@@ -9,11 +9,11 @@
   scripts, and to export to web-based API editors.
   
 ## Content
-* [Usage](#usage)
-  * [Initialization](#initialization)
-  * [Utilization](#utilization)
-  * [Schemas](#schemas)
-* [API Overview](#api-overview)
+1. [Usage](#usage)
+  - [Initialization](#initialization)
+  - [Utilization](#utilization)
+  - [Schemas](#schemas)
+2. [API Overview](#api-overview)
   - [Basic Nodes](#basic-nodes)
     * [Dynamic Nodes](#dynamic-nodes)
     * [Default Values](#default-values)
