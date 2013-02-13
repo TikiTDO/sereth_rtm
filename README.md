@@ -20,7 +20,7 @@
 ## Usage
 ### Initialization
   Perspectives are configured within the scope of the Data object class. See the 
-  [API](#api) for configuration options.
+  [API](#api-reference-) for configuration options.
 ```ruby
 class Data
   # Some record initialization
@@ -61,7 +61,7 @@ end
   a hard-coded path will overwrite other similarly named specs.
 
 ##
-## API Reference <a id="api"></a>
+## API Reference
 ##
   Note, all values pass through `.to_json` unless otherwise noted
 ```ruby
