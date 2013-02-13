@@ -20,7 +20,7 @@
 ## Usage
 ### Initialization
   Perspectives are configured within the scope of the Data object class. See the 
-  [API](#api-reference-) for configuration options.
+  [API](#api-reference) for configuration options.
 ```ruby
 class Data
   # Some record initialization
