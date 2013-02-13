@@ -26,111 +26,155 @@ module Sereth
     end
 
     private
-    # Generates a data handler that will respond to basic node requests
+    # Create a handler for normal nodes
     def generate_basic!(node_name, type, proc, subnode = nil)
-      if type.nil?
-        # Handle normal objects
-        if proc
-          # Proc based node value
-          generator = Proc.new do |inst|
-            if subnode
-              "\"#{node_name}\": #{subnode.execute!(inst.instance_eval(&proc))}"
-            else
-              "\"#{node_name}\": #{inst.instance_eval(&proc).to_json}"
-            end
-          end
-        else
-          # Basic node value
-          generator = Proc.new do |inst|
-            if subnode
-              "\"#{node_name}\": #{subnode.execute!(inst.send(node_name))}"
-            else
-              "\"#{node_name}\": #{inst.send(node_name).to_json}"
-            end
+      # Handle normal objects
+      if proc
+        # Proc based node value
+        generator = Proc.new do |inst|
+          if subnode
+            "\"#{node_name}\": #{subnode.execute!(inst.instance_eval(&proc))}"
+          else
+            "\"#{node_name}\": #{inst.instance_eval(&proc).to_json}"
           end
         end
       else
-        # Handle typed objects - Requires extra handling for schema generation
-        if proc
-          # Proc based node value
-          generator = Proc.new do |inst|
-            proc_result = inst.instance_eval(&proc)
-            is_dummy = proc_result.is_a?(JsonDummy)
-            if proc_result.is_a?(type) || proc_result.nil? || is_dummy
-              if subnode
-                "\"#{node_name}\": #{subnode.execute!(proc_result)}"
-              else
-                if is_dummy
-                  "\"#{node_name}\": #{proc_result.to_json(type)}"
-                else
-                  "\"#{node_name}\": #{proc_result.to_json}"
-                end
-              end
-            else
-              raise 'Invalid type in JSON spec'
-            end
-          end
-        else
-          # Basic node value
-          generator = Proc.new do |inst|
-            proc_result = inst.send(node_name)
-            is_dummy = proc_result.is_a?(JsonDummy)
-            if proc_result.is_a?(type) || proc_result.nil? || is_dummy
-              if subnode
-                "\"#{node_name}\": #{subnode.execute!(proc_result)}"
-              else
-                if is_dummy
-                  "\"#{node_name}\": #{proc_result.to_json(type)}"
-                else
-                  "\"#{node_name}\": #{proc_result.to_json}"
-                end
-              end
-            else
-              raise 'Invalid type in JSON spec'
-            end
+        # Basic node value
+        generator = Proc.new do |inst|
+          if subnode
+            "\"#{node_name}\": #{subnode.execute!(inst.send(node_name))}"
+          else
+            "\"#{node_name}\": #{inst.send(node_name).to_json}"
           end
         end
       end
     end
 
-    # Generates a data handler that will respond to collection requests
+    # Create a handler for typed nodes
+    def generate_typed_basic!(node_name, type, proc, subnode = nil)
+      # Handle typed objects - Requires extra handling for schema generation
+      if proc
+        # Proc based node value
+        generator = Proc.new do |inst|
+          item = inst.instance_eval(&proc)
+          is_dummy = item.is_a?(JsonDummy)
+          if item.is_a?(type) || item.nil? || is_dummy
+            if subnode
+              "\"#{node_name}\": #{subnode.execute!(item)}"
+            else
+              if is_dummy
+                "\"#{node_name}\": #{item.to_json(type)}"
+              else
+                "\"#{node_name}\": #{item.to_json}"
+              end
+            end
+          else
+            raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
+          end
+        end
+      else
+        # Basic node value
+        generator = Proc.new do |inst|
+          item = inst.send(node_name)
+          is_dummy = item.is_a?(JsonDummy)
+          if item.is_a?(type) || item.nil? || is_dummy
+            if subnode
+              "\"#{node_name}\": #{subnode.execute!(item)}"
+            else
+              next "\"#{node_name}\": #{item.to_json(type)}" if is_dummy
+              next "\"#{node_name}\": #{item.to_json}"
+            end
+          else
+            raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
+          end
+        end
+      end
+    end
+
+    # Create a handler for normal collections
     def generate_collection!(node_name, type, proc, subnode = nil)
-      if type == Array
-        # Handle collections
-        if proc
-          # Proc based array values
-          generator = Proc.new do |inst|
-            pre_parse = inst.instance_eval(&proc)
-            pre_parse = [] if pre_parse.nil?
-            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
+      # Handle collections
+      if proc
+        # Proc based array values
+        generator = Proc.new do |inst|
+          pre_parse = inst.instance_eval(&proc)
+          pre_parse = [] if pre_parse.nil?
+          pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
-            if subnode
-              parsed = pre_parse.map{|item| subnode.execute!(item)}
-            else
-              parsed = pre_parse.map{|item| item.to_json}
-            end
-
-            "\"#{node_name}\": [#{parsed.join(",")}]"
+          if subnode
+            parsed = pre_parse.map{|item| subnode.execute!(item)}
+          else
+            parsed = pre_parse.map{|item| item.to_json}
           end
-        else
-          # Basic array values
-          generator = Proc.new do |inst|
-            pre_parse = inst.send(node_name)
-            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
-            if subnode
-              parsed = pre_parse.map{|item| subnode.execute!(item)}
-            else
-              parsed = pre_parse.map{|item| item.to_json}
-            end
-
-            "\"#{node_name}\": [#{parsed.join(",")}]"
-          end
+          "\"#{node_name}\": [#{parsed.join(",")}]"
         end
       else
+        # Basic array values
+        generator = Proc.new do |inst|
+          pre_parse = inst.send(node_name)
+          pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
+          if subnode
+            parsed = pre_parse.map{|item| subnode.execute!(item)}
+          else
+            parsed = pre_parse.map{|item| item.to_json}
+          end
+
+          "\"#{node_name}\": [#{parsed.join(",")}]"
+        end
       end
     end
+
+    # Create a handler for typed collections
+    def generate_typed_collection!(node_name, type, proc, subnode = nil)
+      # Handle collections
+      if proc
+        # Proc based array values
+        generator = Proc.new do |inst|
+          pre_parse = inst.instance_eval(&proc)
+          pre_parse = [] if pre_parse.nil?
+          pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
+
+          if subnode
+            parsed = pre_parse.map do |item|
+              next subnode.execute!(item) if item.is_a?(type) || item.is_a?(JsonDummy)
+              raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
+            end
+          else
+            parsed = pre_parse.map do |item| 
+              next item.to_json(type) if item.is_a?(JsonDummy)
+              next item.to_json if item.is_a?(type)
+              raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
+            end
+          end
+
+          "\"#{node_name}\": [#{parsed.join(",")}]"
+        end
+      else
+        # Basic array values
+        generator = Proc.new do |inst|
+          pre_parse = inst.send(node_name)
+          pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
+
+          if subnode
+            parsed = pre_parse.map do |item|
+              next subnode.execute!(item) if item.is_a?(type) || item.is_a?(JsonDummy)
+              raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
+            end
+          else
+            parsed = pre_parse.map do |item| 
+              next item.to_json(type) if item.is_a?(JsonDummy)
+              next item.to_json if item.is_a?(type)
+              raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
+            end
+          end
+
+          "\"#{node_name}\": [#{parsed.join(",")}]"
+        end
+      end
+    end
+
     public
     # Queue up a node_name accessor for standard attributes
     # Expectation: node_name always originates from a symbol, so no need to escape
@@ -141,10 +185,14 @@ module Sereth
 
       # Generate the command on the spec object
       generator = nil
-      if type.nil? || type.is_a?(Class)
-        generator = generate_basic!
-      elsif type == Array || (type.is_a?(Array) && type.first == Array)
-        generator = generate_collection!
+      if type.nil? 
+        generator = generate_basic!(node_name, type, proc, subnode)
+      elsif type == Array
+        generator = generate_collection!(node_name, type, proc, subnode)
+      elsif type.is_a?(Class)
+        generator = generate_typed_basic!(node_name, type, proc, subnode)
+      elsif type.is_a?(Array) && type.first == Array
+        generator = generate_typed_collection!(node_name, type[1], proc, subnode)
       else
         # Handle invalid types
         raise "Invalid json_spec type: #{type}"

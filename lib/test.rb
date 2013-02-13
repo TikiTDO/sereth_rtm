@@ -84,6 +84,7 @@ class Test
 
     arr Array
     rarr Array, proc {arr}
+    typed_arr [Array, Integer], proc {arr}
 
     foo do
       id
@@ -99,7 +100,7 @@ class Test
 
     override! :else, :hello
     if! proc {false} do puts 'should not happen' end
-    if! proc {true} do next; puts 'should happen' end
+    if! proc {true} do puts 'should happen' end
   end
 end
 
