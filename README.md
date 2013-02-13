@@ -34,14 +34,11 @@ end
 
 ### Utilization
 May be used to render raw JSON data as text. 
-***Note*** - For performance reasons, an option to generate a Ruby object for JSON
-export is not provided. 
 
 ```ruby
-  # Correct Way
-  render :text => data_inst.to_json(:spec => :name)
-  # Wrong Way!
-  render :json => data_inst.to_json(:spec => :name)
+  render :json => data_inst.as_json(:spec => :name)
+  # OR
+  render :text => data_inst.to_json(:spec => :name)  
 ```
 
 May also be utilized to generate a JSON object outline with no values for use in
