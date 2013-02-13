@@ -124,27 +124,47 @@ end
 
 # Result
 data_inst.to_json(spec: :basic) 
-  #=> {"id": #{data_inst.id.to_json}}  
+  #=> {"id": #{data_inst.id.to_json}}
+
+
+# Schema Result
+Data.json_spec_schema(:typed)
+  #=> {"id": "BasicValue"}  
 ```
 
 ### Typed Nodes
   Raw data nodes may specify a data type. This will ensure the resulting data is of a given
-  data type before generating the JSON object. Such a feature is particularly useful when 
-  generating a schema, as it will 
+  data type before generating the JSON object. 
 
-  **Important**: If the data type does not match the generator will emit an error.
-
+  Generating a schema from a typed node will set the value of the node to that type.
 ```ruby
 # Definition
 json_spec :typed do
   id Integer
-  not_a_string String
 end
 
 # Result
 data_inst.to_json(spec: :typed) 
+  #=> {"id": #{data_inst.id.to_json}}  
+
+# Schema Result
+Data.json_spec_schema(:typed)
+  #=> {"id": "Integer"}  
+```
+
+  **Important**: If the data type does not match the generator will emit an error. 
+```ruby
+# Definition
+json_spec :typed_inval do
+  not_a_string String
+end
+
+# Result
+data_inst.to_json(spec: :typed_inval) 
   #=> Error: not_a_string fails data type contraints
 ```
+
+  
 
 ### Dynamic Nodes
   More fine grained control of the node value can be achieved with procs
@@ -189,6 +209,10 @@ end
 
 # Result
 data_inst.to_json(spec: :col) #=> {"nodes": [node1.to_json, node2.to_json...]}  
+
+# Schema Result
+Data.json_spec_schema(:typed)
+  #=> {"id": [... collection_schema ...]}  
 ```
 
 ### Non-Array Collections
@@ -205,6 +229,20 @@ end
 # Result
 data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 ```
+
+### Typed Collections
+  All the data nodes in a collection may specify a data type. This will ensure that all members
+  of the collection are of a given data type before generating the JSON object. Note, when 
+  specifying a typed collection the first value of the type **must** be Array.
+
+  Generating a schema from a typed collection will set the element of that collection to that type
+
+  **Important**: If the data type does not match the generator will emit an error.
+```ruby
+# Definition
+json_spec :typed do
+  post_ids [Array, Integer], proc {posts.map(&:id)}
+end
 
 ### Dynamic Collections
   Collection generation may be extended with blocks or generator functions.
@@ -254,6 +292,10 @@ data_inst.to_json(spec: :obj) #=> "{
   #"key": {"node_name_a": "#{data_inst.key.node_name_a.to_json}"},
   #"other_key": {"node_name_b": "#{data_inst.real_other_key.node_name_b.to_json}"},
   #"no_key": {"node_name_b": "#{data_inst.node_name_c.to_json}"}
+
+# Schema Result
+Data.json_spec_schema(:typed)
+  #=> {"id": [... object_schema ...]}  
 ``` 
 
 

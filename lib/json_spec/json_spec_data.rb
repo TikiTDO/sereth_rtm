@@ -25,15 +25,9 @@ module Sereth
       end
     end
 
-    # Queue up a node_name accessor for standard attributes
-    # Expectation: node_name always originates from a symbol, so no need to escape
-    def command!(node_name, type, proc, subnode = nil)
-      # Add the command to the queue
-      @command_queue.delete(node_name)
-      @command_queue.push(node_name)
-
-      # Generate the command on the spec object
-      generator = nil
+    private
+    # Generates a data handler that will respond to basic node requests
+    def generate_basic!(node_name, type, proc, subnode = nil)
       if type.nil?
         # Handle normal objects
         if proc
@@ -55,39 +49,7 @@ module Sereth
             end
           end
         end
-      elsif type == Array
-        # Handle collections
-        if proc
-          # Proc based array values
-          generator = Proc.new do |inst|
-            pre_parse = inst.instance_eval(&proc)
-            pre_parse = [] if pre_parse.nil?
-            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
-
-            if subnode
-              parsed = pre_parse.map{|item| subnode.execute!(item)}
-            else
-              parsed = pre_parse.map{|item| item.to_json}
-            end
-
-            "\"#{node_name}\": [#{parsed.join(",")}]"
-          end
-        else
-          # Basic array values
-          generator = Proc.new do |inst|
-            pre_parse = inst.send(node_name)
-            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
-
-            if subnode
-              parsed = pre_parse.map{|item| subnode.execute!(item)}
-            else
-              parsed = pre_parse.map{|item| item.to_json}
-            end
-
-            "\"#{node_name}\": [#{parsed.join(",")}]"
-          end
-        end
-      elsif type.kind_of?(Class)
+      else
         # Handle typed objects - Requires extra handling for schema generation
         if proc
           # Proc based node value
@@ -128,6 +90,61 @@ module Sereth
             end
           end
         end
+      end
+    end
+
+    # Generates a data handler that will respond to collection requests
+    def generate_collection!(node_name, type, proc, subnode = nil)
+      if type == Array
+        # Handle collections
+        if proc
+          # Proc based array values
+          generator = Proc.new do |inst|
+            pre_parse = inst.instance_eval(&proc)
+            pre_parse = [] if pre_parse.nil?
+            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
+
+            if subnode
+              parsed = pre_parse.map{|item| subnode.execute!(item)}
+            else
+              parsed = pre_parse.map{|item| item.to_json}
+            end
+
+            "\"#{node_name}\": [#{parsed.join(",")}]"
+          end
+        else
+          # Basic array values
+          generator = Proc.new do |inst|
+            pre_parse = inst.send(node_name)
+            pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
+
+            if subnode
+              parsed = pre_parse.map{|item| subnode.execute!(item)}
+            else
+              parsed = pre_parse.map{|item| item.to_json}
+            end
+
+            "\"#{node_name}\": [#{parsed.join(",")}]"
+          end
+        end
+      else
+
+      end
+    end
+    public
+    # Queue up a node_name accessor for standard attributes
+    # Expectation: node_name always originates from a symbol, so no need to escape
+    def command!(node_name, type, proc, subnode = nil)
+      # Add the command to the queue
+      @command_queue.delete(node_name)
+      @command_queue.push(node_name)
+
+      # Generate the command on the spec object
+      generator = nil
+      if type.nil? || type.is_a?(Class)
+        generator = generate_basic!
+      elsif type == Array || (type.is_a?(Array) && type.first == Array)
+        generator = generate_collection!
       else
         # Handle invalid types
         raise "Invalid json_spec type: #{type}"
