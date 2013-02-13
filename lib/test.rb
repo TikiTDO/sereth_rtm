@@ -159,10 +159,12 @@ if result
       file.write result
     end
   elsif File.exists?(result_file)
-    if File.readlines(result_file).first == result
+    valid_result = File.readlines(result_file).first
+    if valid_result.strip == result.strip
       puts "Valid Match!"
     else
       puts "!!!! INVALID MATCH !!!!"
+      puts "Valid:: #{valid_result}"
     end
   else
 
