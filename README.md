@@ -237,7 +237,7 @@ data_inst.to_json(spec: obj) #=> "{
 ``` 
 
 
-### Objects Collections
+### Object Collections
   As with norman nodes, object nodes may be placed in a collection
 ```ruby
 json_spec :obj_arr do
