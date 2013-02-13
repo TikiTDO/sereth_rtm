@@ -123,12 +123,28 @@ json_spec :basic do
 end
 
 # Result
-data_inst.to_json(spec: basic) 
+data_inst.to_json(spec: :basic) 
   #=> {"id": #{data_inst.id.to_json}}  
 ```
 
 ### Typed Nodes
-  Raw data nodes may specify a data 
+  Raw data nodes may specify a data type. This will ensure the resulting data is of a given
+  data type before generating the JSON object. Such a feature is particularly useful when 
+  generating a schema, as it will 
+
+  **Important**: If the data type does not match the generator will emit an error.
+
+```ruby
+# Definition
+json_spec :typed do
+  id Integer
+  not_a_string String
+end
+
+# Result
+data_inst.to_json(spec: :typed) 
+  #=> Error: not_a_string fails data type contraints
+```
 
 ### Dynamic Nodes
   More fine grained control of the node value can be achieved with procs
@@ -140,7 +156,7 @@ json_spec :basic_proc do
 end
 
 # Result
-data_inst.to_json(spec: basic_proc) 
+data_inst.to_json(spec: :basic_proc) 
   #=> {
     # "id": "#{data_inst.other_id.to_json}",  
     # "tag": #{data_inst.email.to_json}}
@@ -156,7 +172,7 @@ json_spec :basic_def do
 end
 
 # Result
-data_inst.to_json(spec: basic_def) 
+data_inst.to_json(spec: :basic_def) 
   #=> {"word": #{"hello".to_json}}
 ```
 
@@ -172,7 +188,7 @@ json_spec :col do
 end
 
 # Result
-data_inst.to_json(spec: col) #=> {"nodes": [node1.to_json, node2.to_json...]}  
+data_inst.to_json(spec: :col) #=> {"nodes": [node1.to_json, node2.to_json...]}  
 ```
 
 ### Non-Array Collections
@@ -187,7 +203,7 @@ json_spec :col_non_array do
 end
 
 # Result
-data_inst.to_json(spec: col_non_array) #=> "{"key": ["asdf".to_json]}"
+data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 ```
 
 ### Dynamic Collections
@@ -200,7 +216,7 @@ json_spec :col_block do
 end
 
 # Result
-data_inst.to_json(spec: col_block) #=> {
+data_inst.to_json(spec: :col_block) #=> {
   # "nodes": [node1.get.to_json, node2.get.to_json...],
   # "others": [gen_other1.to_json, gen_other2.to_json...]}
 ```
@@ -234,7 +250,7 @@ json_spec :obj do
 end
 
 # Result
-data_inst.to_json(spec: obj) #=> "{
+data_inst.to_json(spec: :obj) #=> "{
   #"key": {"node_name_a": "#{data_inst.key.node_name_a.to_json}"},
   #"other_key": {"node_name_b": "#{data_inst.real_other_key.node_name_b.to_json}"},
   #"no_key": {"node_name_b": "#{data_inst.node_name_c.to_json}"}
