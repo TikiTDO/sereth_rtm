@@ -9,7 +9,24 @@
   scripts, and to export to web-based API editors.
   
 ## Content
-* auto-gen TOC:{:toc}
+* [Usage](#usage)
+  * [](#)
+  * [](#)
+  * [](#)
+* [API Overview](#api-overview)
+  * [Basic Nodes](#basic-nodes)
+    * [Dynamic Nodes](#dynamic-nodes)
+    * [Default Values](#default-values)
+  * [Collections](#collections)
+    * [Non-Array Collections](#non-array-collections)
+    * [Dynamic Collections](#dynamic-collections)
+  * [Objects](#objects)
+    * [Object Collections](#object-collections)
+    * [Glue Object](#glue-object)
+    * [Object Extension](#object-extension)
+  * [Overrides](#overrides)
+  * [Conditionals/Execution break-in](#conditionals-execution-break-in)
+
 
 ## Design Considerations
 
@@ -23,7 +40,7 @@
 ## Usage
 ### Initialization
   Perspectives are configured within the scope of the Data object class. See the 
-  [API](#api-reference) for configuration options.
+  [API](#api-overview) for configuration options.
 ```ruby
 class Data
   # Some record initialization
@@ -64,7 +81,7 @@ end
   a hard-coded path will overwrite other similarly named specs.
 
 ##
-## API Reference
+## API Overview
 ##
   Note, all values pass through `.to_json` unless otherwise noted
 ```ruby
@@ -332,7 +349,7 @@ data_inst.to_json(spec: :ovr)
 ```
 
 ##
-## Conditionals - Execution break-in.
+## Conditionals/Execution break-in
 ##
   Occasionally some nodes may be conditionally required based on some outside criteria.
   For this purpose the json_spec supports operators to break directly into the 
