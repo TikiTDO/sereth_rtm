@@ -29,6 +29,7 @@ time_point("After Require")
 
 class Object
   def to_json
+    return "null" if self.nil?
     "#{self.inspect}"
   end
 end
@@ -58,6 +59,18 @@ class Test
     [1, 2]
   end
 
+  def str
+    "string"
+  end
+
+  def num
+    1
+  end
+
+  def mis_str
+    nil
+  end
+
   json_spec :ext do
     id
   end
@@ -65,6 +78,9 @@ class Test
   json_spec :hi do
     hello
     bye proc {hello}
+    str String
+    num Integer
+    mis_str String
 
     arr Array
     rarr Array, proc {arr}

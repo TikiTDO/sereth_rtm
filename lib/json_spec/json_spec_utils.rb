@@ -15,8 +15,9 @@ module Sereth
   # A dummy JSON 
   class JsonDummy
     # TODO: proper type generation
-    def to_json
-      '""'
+    def to_json(type = nil)
+      return '"BasicType"' if !type
+      "\"#{type.name}\""
     end
 
     # For array arguments, acts as a single argument array

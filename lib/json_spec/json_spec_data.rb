@@ -88,7 +88,46 @@ module Sereth
           end
         end
       elsif type.kind_of?(Class)
-        # Handle typed objects
+        # Handle typed objects - Requires extra handling for schema generation
+        if proc
+          # Proc based node value
+          generator = Proc.new do |inst|
+            proc_result = inst.instance_eval(&proc)
+            is_dummy = proc_result.is_a?(JsonDummy)
+            if proc_result.is_a?(type) || proc_result.nil? || is_dummy
+              if subnode
+                "\"#{node_name}\": #{subnode.execute!(proc_result)}"
+              else
+                if is_dummy
+                  "\"#{node_name}\": #{proc_result.to_json(type)}"
+                else
+                  "\"#{node_name}\": #{proc_result.to_json}"
+                end
+              end
+            else
+              raise 'Invalid type in JSON spec'
+            end
+          end
+        else
+          # Basic node value
+          generator = Proc.new do |inst|
+            proc_result = inst.send(node_name)
+            is_dummy = proc_result.is_a?(JsonDummy)
+            if proc_result.is_a?(type) || proc_result.nil? || is_dummy
+              if subnode
+                "\"#{node_name}\": #{subnode.execute!(proc_result)}"
+              else
+                if is_dummy
+                  "\"#{node_name}\": #{proc_result.to_json(type)}"
+                else
+                  "\"#{node_name}\": #{proc_result.to_json}"
+                end
+              end
+            else
+              raise 'Invalid type in JSON spec'
+            end
+          end
+        end
       else
         # Handle invalid types
         raise "Invalid json_spec type: #{type}"
