@@ -33,21 +33,19 @@ end
 ```
 
 ### Utilization
-May be used to render raw JSON data as text. 
-
+  May be used to render raw JSON data as text. 
 ```ruby
   render :json => data_inst.as_json(:spec => :name)
   # OR
   render :text => data_inst.to_json(:spec => :name)  
 ```
 
-May also be utilized to generate a JSON object outline with no values for use in
-scripts and API editors
-
+### Schema
+  The system may be used to generate an empty JSON schema, which lays out the key names,
+  and JSON level data types (objects, arrays, values).
 ```ruby
-  Data.blank_json_spec(:name)
+  Data.json_spec_schema(:name)
 ```
-
 
 
 ### Perspective Path Gotcha
