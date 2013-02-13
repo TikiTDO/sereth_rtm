@@ -15,6 +15,7 @@
   - [Schemas](#schemas)
 2. [API Overview](#api-overview)
   - [Basic Nodes](#basic-nodes)
+      * [Typed Nodes](#typed-values)
       * [Dynamic Nodes](#dynamic-nodes)
       * [Default Values](#default-values)
   - [Collections](#collections)
@@ -126,6 +127,9 @@ data_inst.to_json(spec: basic)
   #=> {"id": #{data_inst.id.to_json}}  
 ```
 
+### Typed Nodes
+  Raw data nodes may specify a data 
+
 ### Dynamic Nodes
   More fine grained control of the node value can be achieved with procs
 ```ruby
@@ -139,7 +143,7 @@ end
 data_inst.to_json(spec: basic_proc) 
   #=> {
     # "id": "#{data_inst.other_id.to_json}",  
-    # "tag": #{inst.email.to_json}}
+    # "tag": #{data_inst.email.to_json}}
 ```
 
 ### Default Values

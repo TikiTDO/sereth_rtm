@@ -3,20 +3,22 @@ module Sereth
     def initialize
       @spec = Object.new
       @spec_class = class << @spec; self; end
-      @override_spec = []
       @command_queue = []
       @if_count = 0
+      # Array, since reference to spec needs to be available in a different context
+      @extended_spec = []
 
-      # Override Spec helpers
+
+      # Spec extension helpers
       @spec_class.send :define_method, :respond_to_missing? do |node_name|
-        @override_spec.respond_to?(node_name)
+        @extended_spec.respond_to?(node_name)
       end
 
-      local_override_spec = @override_spec
-      # Pass undefined handlers to the override spec
+      local_extended_spec = @extended_spec
+      # Pass undefined handlers to the extended spec
       @spec_class.send :define_method, :method_missing do |method, *args, &block|
-        if !local_override_spec.empty?
-          local_override_spec.first.send(method, *args, &block)
+        if !local_extended_spec.empty?
+          local_extended_spec.first.send(method, *args, &block)
         else
           super(method, *args, &block)
         end
@@ -24,6 +26,7 @@ module Sereth
     end
 
     # Queue up a node_name accessor for standard attributes
+    # Expectation: node_name always originates from a symbol, so no need to escape
     def command!(node_name, type, proc, subnode = nil)
       # Add the command to the queue
       @command_queue.delete(node_name)
@@ -84,6 +87,8 @@ module Sereth
             "\"#{node_name}\": [#{parsed.join(",")}]"
           end
         end
+      elsif type.kind_of?(Class)
+        # Handle typed objects
       else
         # Handle invalid types
         raise "Invalid json_spec type: #{type}"
@@ -93,7 +98,7 @@ module Sereth
 
     # Declare a super-spec to extend this from
     def extends!(spec)
-      @override_spec.clear.push(spec)
+      @extended_spec.clear.push(spec)
     end
 
     def if!(cond_proc, &block)
@@ -116,7 +121,7 @@ module Sereth
         complete[command] = true
       end
 
-      @override_spec.first.each_command(complete, &block) if !@override_spec.empty?
+      @extended_spec.first.each_command(complete, &block) if !@extended_spec.empty?
     end
 
     # 
