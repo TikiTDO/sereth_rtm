@@ -243,6 +243,13 @@ data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 json_spec :typed do
   post_ids [Array, Integer], proc {posts.map(&:id)}
 end
+
+# Result
+#=> {"post_ids": [post1.id, post2.id...]}  
+
+# Schema Result
+Data.json_spec_schema(:typed)
+  #=> {"post_id": ['Integer']}  
 ```
 
 ### Dynamic Collections
