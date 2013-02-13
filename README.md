@@ -9,8 +9,7 @@
   scripts, and to export to web-based API editors.
   
 ## Content
-* auto-gen TOC:
-{:toc}
+* auto-gen TOC:{:toc}
 
 ## Design Considerations
 
