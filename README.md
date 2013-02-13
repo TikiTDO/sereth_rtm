@@ -243,6 +243,7 @@ data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 json_spec :typed do
   post_ids [Array, Integer], proc {posts.map(&:id)}
 end
+```
 
 ### Dynamic Collections
   Collection generation may be extended with blocks or generator functions.
