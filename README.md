@@ -40,12 +40,15 @@ end
   render :text => data_inst.to_json(:spec => :name)  
 ```
 
-### Schema
+### Schemas
   The system may be used to generate an empty JSON schema, which lays out the key names,
   and JSON level data types (objects, arrays, values).
 ```ruby
   Data.json_spec_schema(:name)
 ```
+
+  **Note**: In the future this feature may be expanded to provide info about value data types,
+  size constraints, and other bits of info that may be useful in an online API editor.
 
 
 ### Perspective Path Gotcha
