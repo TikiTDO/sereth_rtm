@@ -5,7 +5,7 @@
   these objects as views, and instead defines different perspectives as core features
   of the data model. 
 
-  The library may also be used to generate examples of blank data types to populate
+  The library may also be used to generate examples of blank data schemas to populate
   scripts, and to export to web-based API editors.
   
 ## Content
