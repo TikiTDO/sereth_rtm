@@ -8,6 +8,7 @@ def time_report
   return if !defined? $time_points
   report_time = Time.now
   report = "Since %-30s: %f seconds"
+  puts "****** Time Report ******"
   $time_points.each do|name, vals|
     if vals.size == 1
       puts report % [name, report_time - vals.first]
@@ -104,6 +105,9 @@ OptionParser.new do |opts|
   opts.on("-l", "--blank", "Generate blank spec") do |v|
     options[:blank] = v
   end
+  opts.on("-g", "--gen", "Save the output to be used for comparison later.") do |v|
+    options[:gen] = v
+  end
 end.parse!
 
 time_point("After Opt")
@@ -124,9 +128,27 @@ elsif options[:time]
   10000.times {test.to_json(:spec => :hi)}
   puts "Time: #{Time.now - start}"
 elsif options[:blank]
-  puts Test.json_spec_schema(:hi)
+  result_file = 'blank.result'
+  result = Test.json_spec_schema(:hi)
 else
-  puts test.as_json(:spec => :hi).to_json
+  result_file = 'normal.result'
+  result = test.as_json(:spec => :hi).to_json
 end
 
+if result
+  puts "Result: #{result}"
+  if options[:gen]
+    File.open(result_file, 'w') do |file|
+      file.write result
+    end
+  elsif File.exists?(result_file)
+    if File.readlines(result_file).first == result
+      puts "Valid Match!"
+    else
+      puts "!!!! INVALID MATCH !!!!"
+    end
+  else
+
+  end
+end
 time_report
