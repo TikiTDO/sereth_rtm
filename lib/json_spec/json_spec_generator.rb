@@ -47,6 +47,14 @@ module Sereth
       return true
     end
 
+    def generate_subnode(&block)
+      # Generate and populate sub-node 
+      subnode = Sereth::JsonSpecData.new
+      self.class.new(@path, @name, subnode).instance_eval(&block)
+      return subnode
+    end
+
+
     # Default handler for creating nodes and sub-nodes
     def method_missing(node_name, type_or_proc = nil, proc = nil, *overflow, &block)
       # Initialize parameters
@@ -59,19 +67,25 @@ module Sereth
       type ||= nil
 
       # Initialize optional sub-node
-      subnode = nil
-      if !block.nil?
-        # Generate sub-node
-        subnode = Sereth::JsonSpecData.new
-
-        # Populate subnode
-        self.class.new(@path, @name, subnode).instance_eval(&block)
-      end
+      subnode = generate_subnode(&block) if !block.nil?
+      subnode ||= nil
 
       # Add the command to the queue for execution
       @data_store.command!(node_name, type, proc, subnode)
     end
 
+
+    # Create a conditional handler to run in the context of the data instance under
+    # operation. If this hanlder returns true run any supplied block.
+    def if!(cond_proc, &block)
+      # Initialize optional sub-node
+      subnode = generate_subnode(&block) if !block.nil?
+      subnode ||= nil
+
+      # Add the subnode to the queue for execution
+      @data_store.if!(cond_proc, subnode)
+    end
+    
     ## Extended Operations
     # Direct access to node creator
     def override!(node_name, *args, &block)
@@ -87,12 +101,6 @@ module Sereth
         
       # Supply the extension info
       @data_store.extends!(self.class.get(path, name))
-    end
-
-    # Create a conditional handler to run in the context of the data instance under
-    # operation. If this hanlder returns true run any supplied block.
-    def if!(cond_proc, &block)
-      @data_store.if!(cond_proc, &block)
     end
   end
 end

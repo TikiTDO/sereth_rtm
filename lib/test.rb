@@ -22,7 +22,6 @@ time_point("Start")
 require 'rubygems'
 require 'pry'
 require 'ap'
-require 'ruby-prof'
 require_relative 'json_spec'
 
 time_point("After Require")
@@ -71,6 +70,14 @@ class Test
     nil
   end
 
+  def should_happen
+    'This should happen'
+  end
+
+  def should_not_happen
+    'This should not happen'
+  end
+
   json_spec :ext do
     id
   end
@@ -99,8 +106,12 @@ class Test
     end
 
     override! :else, :hello
-    if! proc {false} do puts 'should not happen' end
-    if! proc {true} do puts 'should happen' end
+    if! proc {false} do
+     should_not_happen 
+   end
+    if! proc {true} do 
+      should_happen 
+    end
   end
 end
 
@@ -125,6 +136,9 @@ OptionParser.new do |opts|
   opts.on("-g", "--gen", "Save the output to be used for comparison later.") do |v|
     options[:gen] = v
   end
+  opts.on("-p", "--profile", "Profile the execution.") do |v|
+    options[:profile] = v
+  end
 end.parse!
 
 time_point("After Opt")
@@ -134,12 +148,17 @@ test = Test.new
 if options[:benchmark]
   require 'benchmark'
   Benchmark.bm do |b|
-    b.report('') do
-      10000.times {
-        test.to_json(:spec => :hi)
-      }
+    for i in 1..5
+      b.report("Round #{i} - 10k Runs") do
+        10000.times {test.to_json(:spec => :hi)}
+      end
     end
   end
+elsif options[:profile]
+  require 'ruby-prof'
+  RubyProf.start
+  10000.times {test.to_json(:spec => :hi)}
+  report = RubyProf.stop
 elsif options[:time]
   start = Time.now
   10000.times {test.to_json(:spec => :hi)}

@@ -417,6 +417,8 @@ data_inst.to_json(spec: :ovr)
 #=> {"print": #{data_inst.print.to_json}
 ```
 
+***Important*** - The node name must be a symbol, or something that may be converted to a symbol.
+
 ##
 ## Conditionals/Execution break-in
 ##

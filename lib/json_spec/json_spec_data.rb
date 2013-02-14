@@ -1,5 +1,16 @@
 module Sereth
   class JsonSpecData
+    ## Spec Initialization
+    # Receive responder queries from extending spec
+    def respond_to_missing?(node_name)
+      @spec.send(:respond_to_missing?, node_name)
+    end
+
+    # Receive handler requets from extending spec
+    def method_missing(method, *args, &block)
+      @spec.send(method, *args, &block)
+    end
+
     def initialize
       @spec = Object.new
       @spec_class = class << @spec; self; end
@@ -7,14 +18,13 @@ module Sereth
       @if_count = 0
       # Array, since reference to spec needs to be available in a different context
       @extended_spec = []
+      local_extended_spec = @extended_spec
 
-
-      # Spec extension helpers
+      # Query responders from extended spec
       @spec_class.send :define_method, :respond_to_missing? do |node_name|
-        @extended_spec.respond_to?(node_name)
+        local_extended_spec.first.respond_to?(node_name)
       end
 
-      local_extended_spec = @extended_spec
       # Pass undefined handlers to the extended spec
       @spec_class.send :define_method, :method_missing do |method, *args, &block|
         if !local_extended_spec.empty?
@@ -25,22 +35,23 @@ module Sereth
       end
     end
 
+    ## Handler Generation
     private
     # Create a handler for normal nodes
-    def generate_basic!(node_name, type, proc, subnode = nil)
+    def generate_basic!(node_name, type, gen_proc, subnode = nil)
       # Handle normal objects
-      if proc
+      if gen_proc
         # Proc based node value
-        generator = Proc.new do |inst|
+        return proc do |inst, *extra|
           if subnode
-            "\"#{node_name}\": #{subnode.execute!(inst.instance_eval(&proc))}"
+            "\"#{node_name}\": #{subnode.execute!(inst.instance_eval(&gen_proc))}"
           else
-            "\"#{node_name}\": #{inst.instance_eval(&proc).to_json}"
+            "\"#{node_name}\": #{inst.instance_eval(&gen_proc).to_json}"
           end
         end
       else
         # Basic node value
-        generator = Proc.new do |inst|
+        return proc do |inst, *extra|
           if subnode
             "\"#{node_name}\": #{subnode.execute!(inst.send(node_name))}"
           else
@@ -51,12 +62,12 @@ module Sereth
     end
 
     # Create a handler for typed nodes
-    def generate_typed_basic!(node_name, type, proc, subnode = nil)
+    def generate_typed_basic!(node_name, type, gen_proc, subnode = nil)
       # Handle typed objects - Requires extra handling for schema generation
-      if proc
+      if gen_proc
         # Proc based node value
-        generator = Proc.new do |inst|
-          item = inst.instance_eval(&proc)
+        return proc do |inst, *extra|
+          item = inst.instance_eval(&gen_proc)
           is_dummy = item.is_a?(JsonDummy)
           if item.is_a?(type) || item.nil? || is_dummy
             if subnode
@@ -74,7 +85,7 @@ module Sereth
         end
       else
         # Basic node value
-        generator = Proc.new do |inst|
+        return proc do |inst, *extra|
           item = inst.send(node_name)
           is_dummy = item.is_a?(JsonDummy)
           if item.is_a?(type) || item.nil? || is_dummy
@@ -92,12 +103,12 @@ module Sereth
     end
 
     # Create a handler for normal collections
-    def generate_collection!(node_name, type, proc, subnode = nil)
+    def generate_collection!(node_name, type, gen_proc, subnode = nil)
       # Handle collections
-      if proc
+      if gen_proc
         # Proc based array values
-        generator = Proc.new do |inst|
-          pre_parse = inst.instance_eval(&proc)
+        return proc do |inst, *extra|
+          pre_parse = inst.instance_eval(&gen_proc)
           pre_parse = [] if pre_parse.nil?
           pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
@@ -111,7 +122,7 @@ module Sereth
         end
       else
         # Basic array values
-        generator = Proc.new do |inst|
+        return proc do |inst, *extra|
           pre_parse = inst.send(node_name)
           pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
@@ -127,12 +138,12 @@ module Sereth
     end
 
     # Create a handler for typed collections
-    def generate_typed_collection!(node_name, type, proc, subnode = nil)
+    def generate_typed_collection!(node_name, type, gen_proc, subnode = nil)
       # Handle collections
-      if proc
+      if gen_proc
         # Proc based array values
-        generator = Proc.new do |inst|
-          pre_parse = inst.instance_eval(&proc)
+        return proc do |inst, *extra|
+          pre_parse = inst.instance_eval(&gen_proc)
           pre_parse = [] if pre_parse.nil?
           pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
@@ -153,7 +164,7 @@ module Sereth
         end
       else
         # Basic array values
-        generator = Proc.new do |inst|
+        return proc do |inst, *extra|
           pre_parse = inst.send(node_name)
           pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
@@ -178,7 +189,7 @@ module Sereth
     public
     # Queue up a node_name accessor for standard attributes
     # Expectation: node_name always originates from a symbol, so no need to escape
-    def command!(node_name, type, proc, subnode = nil)
+    def command!(node_name, type, gen_proc, subnode = nil)
       # Add the command to the queue
       @command_queue.delete(node_name)
       @command_queue.push(node_name)
@@ -186,18 +197,46 @@ module Sereth
       # Generate the command on the spec object
       generator = nil
       if type.nil? 
-        generator = generate_basic!(node_name, type, proc, subnode)
+        generator = generate_basic!(node_name, type, gen_proc, subnode)
       elsif type == Array
-        generator = generate_collection!(node_name, type, proc, subnode)
+        generator = generate_collection!(node_name, type, gen_proc, subnode)
       elsif type.is_a?(Class)
-        generator = generate_typed_basic!(node_name, type, proc, subnode)
+        generator = generate_typed_basic!(node_name, type, gen_proc, subnode)
       elsif type.is_a?(Array) && type.first == Array
-        generator = generate_typed_collection!(node_name, type[1], proc, subnode)
+        generator = generate_typed_collection!(node_name, type[1], gen_proc, subnode)
       else
         # Handle invalid types
         raise "Invalid json_spec type: #{type}"
       end
+
+      # Declare the generator method in the data object
       @spec_class.send :define_method, node_name, &generator
+    end
+
+    private
+    def gnerate_if!
+
+    end
+    public
+    # Declare a conditional executior with execution break-in
+    def if!(cond_proc, subnode)
+      @if_count += 1
+      if_name = "__json_conditional_#{@if_count}__".to_sym
+      @command_queue.push(if_name)
+
+      # Conditionals should not 
+      conditional = proc do |inst, *extra|
+        if inst.is_a?(JsonDummy)
+          inst = JsonDummy.new('Conditional')
+          result = true
+        else
+          result = cond_proc.call(inst)
+        end
+        return subnode.execute_inside!(inst) if result && subnode
+        return nil
+      end
+
+      @spec_class.send :define_method, if_name, &conditional
     end
 
     # Declare a super-spec to extend this from
@@ -205,48 +244,32 @@ module Sereth
       @extended_spec.clear.push(spec)
     end
 
-    def if!(cond_proc, &block)
-      @if_count += 1
-      if_name = "json_cond_#{@if_count}".to_sym
-      @command_queue.push(if_name)
-
-      conditional = proc do |inst|
-        result = cond_proc.call(inst)
-        block.call if result && block
-      end
-
-      @spec_class.send :define_method, if_name, &conditional
-    end
-
     # Iterate over all commands defined in this object, and all commands in super-objects
-    def each_command(complete = {}, &block)
+    def each_command!(complete = {}, &block)
       @command_queue.each do |command|
-        block.call(command) if !complete[command]
+        block.call(command, complete) if !complete[command]
         complete[command] = true
       end
 
-      @extended_spec.first.each_command(complete, &block) if !@extended_spec.empty?
+      @extended_spec.first.each_command!(complete, &block) if !@extended_spec.empty?
     end
 
-    # 
-    def execute!(inst)
-      ret = '{'
+    # Execute the spec for the given instance, and return the raw results
+    def execute_inside!(inst)
+      ret = ""
       ph = ""
       # Run every command from the command queue
-      each_command do |command|
-        res = @spec.send(command, inst)
+      each_command! do |command, complete|
+        res = @spec.send(command, inst, complete)
         ret << ph << res if res
-        ph = ", " if ph 
+        ph = ", " if ph == ""
       end
-      ret << '}'
+      ret
     end
 
-    def respond_to_missing?(node_name)
-      @spec.send(:respond_to_missing?, node_name)
-    end
-
-    def method_missing(method, *args, &block)
-      @spec.send(method, *args, &block)
+    # Execute the spec for the given instance, and place the result in an object
+    def execute!(inst)
+      '{' << execute_inside!(inst) << '}'
     end
   end
 end

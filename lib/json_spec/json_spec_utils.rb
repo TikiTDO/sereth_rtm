@@ -14,10 +14,14 @@ module Sereth
 
   # A dummy JSON 
   class JsonDummy
+    def initialize(prefix = nil)
+      @prefix = prefix
+    end
+
     # TODO: proper type generation
     def to_json(type = nil)
-      return '"BasicType"' if !type
-      "\"#{type.name}\""
+      return "\"#{@prefix}BasicType\"" if !type
+      "\"#{@prefix}#{type.name}\""
     end
 
     # For array arguments, acts as a single argument array
