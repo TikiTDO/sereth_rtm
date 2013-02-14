@@ -69,7 +69,7 @@ end
   Data.json_spec_schema(:name)
 ```
 
-  **Note**: In the future this feature may be expanded to provide info about value data types,
+  ***Note***: In the future this feature may be expanded to provide info about value data types,
   size constraints, and other bits of info that may be useful in an online API editor.
 
 
@@ -153,7 +153,7 @@ Data.json_spec_schema(:typed)
   #=> {"id": "Integer"}  
 ```
 
-  **Important**: If the data type does not match the generator will emit an error. 
+  ***Important***: If the data type does not match the generator will emit an error. 
 ```ruby
 # Definition
 json_spec :typed_inval do
@@ -238,7 +238,7 @@ data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 
   Generating a schema from a typed collection will set the element of that collection to that type
 
-  **Important**: If the data type does not match the generator will emit an error.
+  ***Important***: If the data type does not match the generator will emit an error.
 ```ruby
 # Definition
 json_spec :typed do
@@ -399,7 +399,7 @@ end
 second_inst.to_json(spec: :obj_ext_path) #=> {"first": {"key": 1}}
 ```
 
-***Important*** - Each block may be extended only once. New extensions override the prior ones.
+***Important***: Each block may be extended only once. New extensions override the prior ones.
 
 ##
 ## Overrides
@@ -418,7 +418,7 @@ data_inst.to_json(spec: :ovr)
 #=> {"print": #{data_inst.print.to_json}
 ```
 
-***Important*** - The node name must be a symbol, or something that may be converted to a symbol.
+***Important***: The node name must be a symbol, or something that may be converted to a symbol.
 
 ##
 ## Conditionals/Execution break-in
@@ -427,7 +427,7 @@ data_inst.to_json(spec: :ovr)
   For this purpose the json_spec supports operators to break directly into the 
   execution of the spec generator.
 
-  ***Note*** - All conditionals are executed within the context of the data_inst.
+  ***Note***: All conditionals are executed within the context of the data_inst.
 ```ruby
 # Definition
 json_spec :cond do
