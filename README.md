@@ -93,10 +93,16 @@ json_spec spec_name do
   node_name :gen #=> "node_name": #{inst.gen)}
   node_name proc #=> "node_name": #{inst.instance_eval(&proc)}
 
+  # Typed Key-Value Nodes (Exception on invalid types)
+  node_name Type, ... # Same operation as normal Key-Array nodes
+
   # Key-Array Nodes
   node_name Array #=> "node_name": [#{inst.node_name.each {|val| val}}]
   node_name Array, :gen #=> "node_name": [#{inst.node_name.each(&:gen)}]
   node_name Array, proc #=> "node_name": [#{inst.node_name.each(&proc)}]
+
+  # Typed Key-Array Nodes (Exception on invalid types)
+  node_name [Array, Type], ... # Same operation as normal Key-Array nodes
 
   # Key-Object Nodes 
   node_name do ... end 
@@ -109,7 +115,7 @@ json_spec spec_name do
   ## Operations
   override! :node_name, ... # Same functionality as above, but allows for restricted names
   extends! (DataClass or "collection_name" or :spec_name)[, :spec_name] # Utilize a spec for nodes specified there and not in this context
-  if! proc do ... end # Executes the proc in the context of the inst, then runs any present block in the current definition context if the proc return value evalutates to true
+  if! proc do ... end # Executes the proc in the context of the inst, then renders the contained spec if the proc return value evalutates to true
 end
 ```
 

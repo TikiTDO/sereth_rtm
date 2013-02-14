@@ -212,12 +212,7 @@ module Sereth
       # Declare the generator method in the data object
       @spec_class.send :define_method, node_name, &generator
     end
-
-    private
-    def gnerate_if!
-
-    end
-    public
+    
     # Declare a conditional executior with execution break-in
     def if!(cond_proc, subnode)
       @if_count += 1
