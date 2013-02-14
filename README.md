@@ -442,6 +442,9 @@ data_inst.to_json(spec: :cond)
 #=> if not data_inst.some_check
   # {}
 
+# Schema Result
+  # {"key": "ConditionalBasicType"}
+
 ```
 
 ## Caveats
