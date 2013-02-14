@@ -1,6 +1,6 @@
-# Sereth JSON Perspectives
+# Sereth JSON Spec
 
-  Sereth JSON Perspectives is a rails plugin based on the idea of treating models like
+  Sereth JSON Spec is a rails plugin based on the idea of treating models like
   API objects exported through JSON. It breaks with the rails convention of treating
   these objects as views, and instead defines different perspectives as core features
   of the data model. 
