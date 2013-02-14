@@ -20,6 +20,7 @@
       * [Default Values](#default-values)
   - [Collections](#collections)
       * [Non-Array Collections](#non-array-collections)
+      * [Typed Collections](#typed-collections)
       * [Dynamic Collections](#dynamic-collections)
   - [Objects](#objects)
       * [Object Collections](#object-collections)
