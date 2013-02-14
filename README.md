@@ -108,7 +108,7 @@ json_spec spec_name do
   node_name do ... end 
     #=> "node_name": {#{json_spec.from(&block).apply(inst.node_name)}}
 
-  # Key-Object Collections
+  # Key-Array of Object Nodes
   node_name Array do ... end 
     #=> "node_name": [#{inst.node_name.each {|item| json_spec.from(&block).apply(item)}}]
 
