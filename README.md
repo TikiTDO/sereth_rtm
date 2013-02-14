@@ -94,7 +94,7 @@ json_spec spec_name do
   node_name proc #=> "node_name": #{inst.instance_eval(&proc)}
 
   # Typed Key-Value Nodes (Exception on invalid types)
-  node_name Type, ... # Same operation as normal Key-Array nodes
+  node_name Type, ... # Same operation as normal Key-Value nodes
 
   # Key-Array Nodes
   node_name Array #=> "node_name": [#{inst.node_name.each {|val| val}}]
