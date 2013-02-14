@@ -249,8 +249,16 @@ module Sereth
       @extended_spec.first.each_command!(complete, &block) if !@extended_spec.empty?
     end
 
+    before :execution_inside! do |variable|
+      
+    end
+
     # Execute the spec for the given instance, and return the raw results
     def execute_inside!(inst)
+      # Handle cached schemas
+      cache = JsonSpecCache.get_cached(self, inst)
+      return @schema if inst.is_a?(JsonDummy) && @schema
+
       ret = ""
       ph = ""
       # Run every command from the command queue
@@ -259,6 +267,8 @@ module Sereth
         ret << ph << res if res
         ph = ", " if ph == ""
       end
+
+      @schema = ret if inst.is_a?(JsonDummy) && !@schema
       ret
     end
 

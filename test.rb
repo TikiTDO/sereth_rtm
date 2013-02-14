@@ -22,7 +22,7 @@ time_point("Start")
 require 'rubygems'
 require 'pry'
 require 'ap'
-require_relative 'json_spec'
+require_relative 'lib/json_spec'
 
 time_point("After Require")
 

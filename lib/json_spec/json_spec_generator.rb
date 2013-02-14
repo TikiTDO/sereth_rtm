@@ -1,6 +1,7 @@
 module Sereth
   class JsonSpecGenerator
     @specs = {}
+    @schema = nil
     @aliases = {}
     @alias_getter = lambda {}
 
