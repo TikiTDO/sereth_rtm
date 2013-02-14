@@ -35,22 +35,30 @@ module Sereth
       target_class.send :instace_variable_set, :@_callback_count, 0
     end
 
+    # Generate a new method to handle this part of the callback
     def method_added(name)
       return pre_callback_method_added if CallbackDB.serves?(self, name)
-      CallbackDB.each(self, name).each do |type, block, count|
+      CallbackDB.each(self, name).each do |type, callback, count|
         callback_count = (@_callback_count += 1)
         target_name = "___callback_for_#{name}_#{callback_count}".to_sym
         target.send :alias_method, :target_name, name
         case type
         when :before
           target.send :define_method, name do |*args, &block|
-            block.call(*args, &block)
-            block.send(name)
+            callback.call(*args, &block)
+            self.send(target_name, *args, &block)
           end
         when :after
-
+          target.send :define_method, name do |*args, &block|
+            self.send(target_name, *args, &block)
+            callback.call(*args, &block)
+          end
         when :around
-
+          target.send :define_method, name do |*args, &block|
+            callback.call(*args) do
+              self.send(target_name, *args, &block)
+            end
+          end
         else
           raise "Invalid callback type. Should never happen."
         end
