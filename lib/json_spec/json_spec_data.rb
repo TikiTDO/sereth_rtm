@@ -252,6 +252,7 @@ module Sereth
       @extended_spec.first.each_command!(complete, &block) if !@extended_spec.empty?
     end
 
+    # Handle caching
     around_method :execution_inside! do |inst|
       to_cache = false
       if to_cache
