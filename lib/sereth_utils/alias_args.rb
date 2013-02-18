@@ -1,13 +1,18 @@
+=begin
 # Usage:
-#   class Thing
-#     def method_name(*args)
-#       args
-#     end
-#     alias_shift_arg(:method_changed, :method_name, 1, 2, 3)
-#   end
-#   thing = Thing.new
-#   thing.method_name("a").inspect #=> ["a"]
-#   thing.method_changed("a").inspect #=> [1, 2, 3, "a"]
+
+class Thing
+  def method_name(*args)
+    args
+  end
+  alias_shift_arg(:method_changed, :method_name, 1, 2, 3)
+end
+
+
+thing = Thing.new
+thing.method_name("a").inspect #=> ["a"]
+thing.method_changed("a").inspect #=> [1, 2, 3, "a"]
+=end
 
 class Object
   class << self
