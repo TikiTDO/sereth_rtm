@@ -252,23 +252,15 @@ module Sereth
       @extended_spec.first.each_command!(complete, &block) if !@extended_spec.empty?
     end
 
+    extend Callbacks
     # Handle caching
-    around_method :execution_inside! do |inst|
-      to_cache = false
-      if to_cache
-        # Always reload instances if a changed status cannot be detected
-        reload = inst.respond_to?(:should_reload?) ? inst.should_reload? : true
-
-        cache = nil
-        cache = yield if reload
-        cache ||= JsonSpecCache.get_cached(self, inst)
-
-        # Handle cached schemas
-        JsonSpecCache.save(self, inst, cache) if reload
+    around_method :execution_inside! do |runner, args|
+      if JsonSpecCache.enabled? 
+        cache = JsonSpecCache.retrieve(*args)
+        cache = JsonSpecCache.store(runner.call, *args) if !cache
       else
-        cache = yield
+        cache = runner.call
       end
-
       cache
     end
 

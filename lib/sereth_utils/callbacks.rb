@@ -6,31 +6,27 @@ Implements before, after, and around callbacks for any requested function.
 class Example
   include Sereth::Callback
 
-  before_method :method_name do |*args, block| 
-    puts 'b'
+  before_method :method_name do |args, block| 
+    print 'b'
   end
-  before_method :method_name do |*args, block| 
-    puts 'b1'
+  before_method :method_name do |args, block| 
+    print 'b1'
   end
-  after_method :method_name do |*args, block| 
-    puts 'af' 
+  after_method :method_name do |args, block| 
+    print 'a' 
   end
-  after_method :method_name do |*args, block| 
-    puts 'af1' 
+  after_method :method_name do |args, block| 
+    print 'a1' 
   end
-  around_method :method_name do |*args| 
-    puts 'ar1' && yield && puts 'ar2'
+  around_method :method_name do |runner, args, block| 
+    print 'ar1' && runner.call && print 'ar2'
   end
-  around_method_full :method_name do |{:args => [], :block => block}|
-    puts 'arf1' && yield && puts 'arf2
-  end
-
   def method_name(*args, &block)
-    puts 'method'
+    print 'method'
   end
 end
 
-Example.new.method_name => arf1 ar1 b1 b method af af1 ar2 arf2
+Example.new.method_name => ar1 b1 b method a a1 ar2
 
 ## Ordering
 Call-in order priority increases for later defines. 
@@ -57,15 +53,20 @@ module Sereth
     class << self
       # Retrieve the callback object
       def get(class_obj, func_name)
-        key = class_obj.hash ^ func_name.hash
+        key = [class_obj, func_name]
         return @db[key] if @db.has_key?(key)
         return []
       end
 
+      def has?(class_obj, func_name)
+        key = [class_obj, func_name]
+        @db.has_key?(key)
+      end
+
       def save(class_obj, func_name, op, block)
-        key = class_obj.hash ^ func_name.hash
+        key = [class_obj, func_name]
         @db[key] ||= CallbackDB.new(class_obj, func_name)
-        @db[key].push(op, block)
+        @db[key].add(op, block)
       end
     end
 
@@ -121,7 +122,6 @@ module Sereth
       end
     end
 
-    private
     # Adds a specified callback is [op, block]. Only called from CallbackDB.save
     def add(*args)
       @callbacks.push(args)
@@ -132,76 +132,66 @@ module Sereth
   module Callbacks
     # This module is only for extension
     def self.included(target)
-      raise "The #{self} Module should only be extended."
+      raise "The #{self} Module should only be extended, not included."
     end
 
     # Add the callback method added to the method_added stack
     def self.extended(target)
       target_class = class << target; self; end
       # Stack the method_added callback
-      target.send :alias_method, :_precb_method_added, :method_added
-      # Force module to override this method
-      target_class.send :remove_method, :method_added
+      if target.method_defined?(:method_added)
+        # Force module to override this method
+        target.send :alias_method, :_precb_method_added, :method_added
+        target_class.send :remove_method, :method_added
+      else
+        target_class.send :define_method, :_precb_method_added do  end
+      end
 
-      target_class.send :instace_variable_set, :@_callback_active, false
-    end
-
-    def _inject_before_callback
-
-    end
-
-    def _inject_after_callback
-
-    end
-
-    def _inject_around_callback
-
+      # Instantiate callback activity tracker
+      target_class.send :instance_variable_set, :@_callback_active, false
     end
 
     # Generate a new method to handle this part of the callback
     def method_added(func_name)
       # Ignore methods being defined for the callback process
       return _precb_method_added if @_callback_active
-
-      callback_db = CallbackDB.get(self, func_name)
-      return _precb_method_added if !callback_db
+      return _precb_method_added if !CallbackDB.has?(self, func_name)
       # Notify self that we are adding callbakcs
-
       @_callback_active = true
-
+      callback_db = CallbackDB.get(self, func_name)
+      
 
       # Need to define all the callbacks
       self.send :alias_method, callback_db.orig_label, func_name
       callback_db.each do |op, callback, callback_label, callto_label|
-        case type
+        case op
         when :before
           self.send :define_method, callback_label do |*args, &block|
-            callback.call(*args, &block)
+            self.instance_exec(args, block, &callback)
             self.send(callto_label, *args, &block)
           end
         when :after
           self.send :define_method, callback_label do |*args, &block|
             self.send(callto_label, *args, &block)
-            callback.call(*args, &block)
+            self.instance_exec(args, block, &callback)
           end
         when :around
           self.send :define_method, callback_label do |*args, &block|
-            callback.call(*args) do
-              self.send(callto_label, *args, &block)
+            # Run the around callback
+            #  The around callback should access the local methods
+            #  The around callback shold yield to run the chain
+            inst = self
+            runner = proc do
+              inst.send(callto_label, *args, &block)
             end
-          end
-        when :around_full
-          self.send :define_method, callback_label do |*args, &block|
-            callback.call({:args => args, :block => block}) do
-              self.send(callto_label, *args, &block)
-            end
+            self.instance_exec(runner, args, block, &callback)
           end
         else
           raise "Invalid callback type. Should never happen."
         end
 
         # Alias the current callback 
-        self.send :alias_method, callback_label, func_name
+        self.send :alias_method, func_name, callback_label
       end
       
       # Finished adding callbacks
@@ -209,11 +199,11 @@ module Sereth
       return _precb_method_added
     end
 
+    extend AliasArgs
     # Methods to populate the callback DB
     alias_shift_args :before_method, :_add_callback, :before
     alias_shift_args :after_method, :_add_callback, :after
     alias_shift_args :around_method, :_add_callback, :around
-    alias_shift_args :around_method_full, :_add_callback, :around_full
     def _add_callback(op, func_name, &block)
       CallbackDB.save(self, func_name, op, block)
     end
