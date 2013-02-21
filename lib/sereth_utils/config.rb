@@ -36,16 +36,33 @@ TODO: Fully formed Flow path
 The configuration module is best combined with binding stages in order to ensure that
 the execution has proper access to the local context, and all values defined therein.
 
+Valid Types: Boolean (Default) | Integer | String
+
 class Data
-  binding.stage :after_data do
+  binding.stage :after_parse do
     extend Sereth::Config
 
-    args_config :full, "path", :here do
-      param :name, "desc", (Integer | String | Boolean) # Specify a data parameter
-      exec :name, "desc" &block # Specify a block to execute on parameter
+    args_config :category, "path"... do
+      bool :name_b, "desc"[, default_value]
+      int :name_i, "desc"[, default_value]
+      string :name_s, "desc"[, default_value]
+      exec :name_e, "desc" &block 
+
+      config :deeper_category do
+        bool :name_x
+      end
     end
   end
 end
+
+Sereth::Stage.run_stage :after_parse
+
+Sereth::Config.value(:category, :path, :name_b) #=> Bool Value/Default/nil
+cont = Sereth::Config.container(:category, :path, :deeper_category)
+con
+
+## Argument Styles
+Static arguments: Basic type of argument, optionally p
 
 =end
 module Sereth
