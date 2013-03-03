@@ -43,6 +43,10 @@ class Data
     extend Sereth::Config
 
     args_config :category, "path"... do
+      command :name do
+
+      end
+
       bool :name_b, "desc"[, default_value]
       int :name_i, "desc"[, default_value]
       string :name_s, "desc"[, default_value]
@@ -50,6 +54,7 @@ class Data
 
       config :deeper_category do
         bool :name_x
+
       end
     end
   end
@@ -62,7 +67,11 @@ cont = Sereth::Config.container(:category, :path, :deeper_category)
 con
 
 ## Argument Styles
-Static arguments: Basic type of argument, optionally p
+Static arguments: Basic type of argument, optionally assigned a default value. These 
+  arguments are automatically parsed when they are defined, and may be re-parsed later
+  for updates.
+Dynamic arguments: These arguments are generated automatically once they are accessed,
+  or when the configdb is notified to parse the data.
 
 =end
 module Sereth

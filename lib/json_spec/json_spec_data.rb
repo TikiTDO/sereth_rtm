@@ -15,6 +15,7 @@ module Sereth
     end
 
     def initialize
+      @raw = {}
       @spec = Object.new
       @spec_class = class << @spec; self; end
       @command_queue = []
@@ -214,6 +215,7 @@ module Sereth
 
       # Declare the generator method in the data object
       @spec_class.send :define_method, node_name, &generator
+      @raw[node_name] = type
     end
     
     # Declare a conditional executior with execution break-in
@@ -235,6 +237,7 @@ module Sereth
       end
 
       @spec_class.send :define_method, if_name, &conditional
+      @raw[if_name] = subnode
     end
 
     # Declare a super-spec to extend this from

@@ -1,8 +1,5 @@
-# General libraries
-require 'andand'
-
 # Sereth Libraries
-require_relative 'sereth_utils/callbacks'
+require_relative 'sereth_utils/all'
 
 # JSON Spec
 require_relative 'json_spec/json_spec_utils'
@@ -11,4 +8,4 @@ require_relative 'json_spec/json_spec_cache'
 require_relative 'json_spec/json_spec_data'
 require_relative 'json_spec/json_spec_module'
 
-binding.run_stage(:spec_loaded)
+Binding.run_stage(:sereth_util_loaded)

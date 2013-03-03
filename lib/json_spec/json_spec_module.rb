@@ -11,6 +11,11 @@ module Sereth
       Sereth::JsonSpecGenerator.parse(self.name, spec, JsonDummy.new)
     end
 
+    def each_json_spec(&block)
+      path = json_spec_path(path)
+      Sereth::JsonSpecGenerator.each(path, &block)
+    end
+
     # Registered a new spec of a given name
     def json_spec(name, path = nil, &block)
       # Parse the input token data

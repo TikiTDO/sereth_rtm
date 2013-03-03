@@ -26,18 +26,25 @@ $result == [1, 2]
 =end
 require 'sourcify'
 
-class Binding
-  def stage(name, &block)
-    Sereth::Stage.add_stage(name, self, block)
-  end
-
-  def exec(&block)
-    return if block.nil?
-    self.eval(block.to_source(:strip_enclosure => true))
-  end
-end
-
 module Sereth
+  module StageBindingExtender
+    def run_stage(name)
+      Sereth::Stage.run_stage(:sereth_util_loaded)
+    end
+  end
+
+  module StageBinding
+    # Convert the requested block to source code
+    def stage(name, &block)
+      Sereth::Stage.add_stage(name, self, block.to_source(:strip_enclosure => true))
+    end
+
+    # Extend target with the proper singleton methods
+    def self.included(target)
+      target.send(:extend, BindingStageExtender)
+    end
+  end
+
   class Stage
     @db = {}
     class << self
@@ -47,6 +54,7 @@ module Sereth
       end
 
       def run_stage(name)
+        return if !@db.has_key?(name)
         @db.delete(name).run
       end
     end
@@ -61,20 +69,12 @@ module Sereth
     end
 
     def run
-      @targets.each {|target_binding, code| target_binding.exec(&code)}
+      @targets.each {|target_binding, code| target_binding.eval(code)}
     end
   end
 end
 
-$result = []
-class Ex
-  val = 1
-  $result.push(val)
-  binding.stage(:after) {$result.push(val)}
-  val = 2
+
+class Binding
+  include Sereth::StageBinding
 end
-
-Sereth::Stage.run_stage :after 
-
-puts $result.to_s
-puts $result == [1, 2]

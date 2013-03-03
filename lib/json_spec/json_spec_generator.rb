@@ -26,6 +26,16 @@ module Sereth
       def get(path, name)
         @specs[[path, name]]
       end
+
+      def each(path = nil, &block)
+        if path.nil?
+          @specs.each(&block)
+        else
+          @specs.each do |k, v|
+            block.call(k.last, v) if k.first == path
+          end
+        end
+      end
     end
     
     # Remove all unnecessary methods
