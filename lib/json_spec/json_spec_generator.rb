@@ -67,22 +67,25 @@ module Sereth
 
 
     # Default handler for creating nodes and sub-nodes
-    def method_missing(node_name, type_or_proc = nil, proc = nil, *overflow, &block)
-      # Initialize parameters
-      if type_or_proc.kind_of?(Proc) || type_or_proc.kind_of?(Symbol)
-        raise "Lambdas not support" if proc && proc.lambda?
-        proc = type_or_proc if proc.nil?
+    def method_missing(node_name, sym_or_arr = nil, sym = nil, *_,
+                        type: nil, get: nil, set: nil, &block)
+      # Determine if the data is an array
+      arr = (sym_or_arr == Array)
+      # Get symbol param shorthand
+      sym = sym_or_arr if sym_or_arr.kind_of?(Symbol)
+      get = sym if get.nil? && sym.is_a?(Symbol)
+
+      if block
+        # Objects do not support extended options. Use keys in the subnode.
+        subnode = generate_subnode(&block) if !block.nil?
+        subnode ||= nil
+        @data_store.command!(node_name, arr, subnode)
       else
-        type = type_or_proc
-      end      
-      type ||= nil
-
-      # Initialize optional sub-node
-      subnode = generate_subnode(&block) if !block.nil?
-      subnode ||= nil
-
-      # Add the command to the queue for execution
-      @data_store.command!(node_name, type, proc, subnode)
+        raise "Getter must not be a lambda" if get.is_a?(Proc) && get.lambda?
+        raise "Setter must not be a lambda" if set.is_a?(Proc) && set.lambda?
+        raise "Type must be a class" if !type.nil? && !type.is_a?(Class)
+        @data_store.command!(node_name, arr, subnode, type: type, get: get, set: set)
+      end
     end
 
 

@@ -109,18 +109,18 @@ json_spec spec_name do
   # Key-Value Nodes
   node_name #=> "node_name": #{inst.node_name}
   node_name :symbol #=> "node_name": #{inst.symbol)}
-  node_name get: proc, set: proc #=> "node_name": #{inst.instance_eval(&proc)}
+  node_name get: proc, set: proc {|value|} #=> "node_name": #{inst.instance_eval(&proc)}
 
   # Typed Key-Value Nodes (Exception on invalid types)
-  node_name Type, ... # Same operation as normal Key-Value nodes
+  node_name type: Type, ... # Same operation as normal Key-Value nodes
 
   # Key-Array Nodes
   node_name Array #=> "node_name": [#{inst.node_name.each {|val| val}}]
   node_name Array, :symbol #=> "node_name": [#{inst.node_name.each(&:symbol)}]
-  node_name Array, get: proc #=> "node_name": [#{inst.node_name.each(&proc)}]
+  node_name Array, get: proc set: proc {|parsed_array|}#=> "node_name": [#{inst.node_name.each(&proc)}]
 
   # Typed Key-Array Nodes (Exception on invalid types)
-  node_name [Array, Type], ... # Same operation as normal Key-Array nodes
+  node_name Array, type: Type, ... # Same operation as normal Key-Array nodes
 
   # Key-Object Nodes 
   node_name do ... end 
@@ -131,9 +131,11 @@ json_spec spec_name do
     #=> "node_name": [#{inst.node_name.each {|item| json_spec.from(&block).apply(item)}}]
 
   ## Operations
-  override! :node_name, ... # Same functionality as above, but allows for restricted names
-  extends! (DataClass or "collection_name" or :spec_name)[, :spec_name] # Utilize a spec for nodes specified there and not in this context
-  if! proc do ... end # Executes the proc in the context of the inst, then renders the contained spec if the proc return value evalutates to true
+  override! :node_name, ... # Identical functionality to above. Useful for ruby keyword names
+  extends! :spec_name # Extend from a different spec in the same node
+  extends! DataClass, :spec_name # Extend from a different spec for a different node
+  extends! 'collection_name', :spec_name # Sambe as above, for rails collection names
+  if! proc do ... end # Exted current spec if proc returns true in context of current inst
 end
 ```
 
@@ -223,7 +225,7 @@ data_inst.to_json(spec: :basic_def)
 ```ruby
   # Definition
 json_spec :basic_imp do
-  basic set: :set_basic.caller
+  basic set: :set_basic
   complex set: :set_attribute.caller_shift(:complex)
   word set: :assign.caller_push(:word)
   custom set: proc {|value| set_custom('name', value, force: true)}
