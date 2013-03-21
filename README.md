@@ -19,7 +19,9 @@
       * [Typed Nodes](#typed-values)
       * [Dynamic Nodes](#dynamic-nodes)
       * [Default Values](#default-values)
-      * [Basic Node Import](#basic-node-import)
+      * [Basic Node Setters](#basic-node-setters)
+      * [Extended Node Setters](#extended-node-setters)
+      * [Typed Node Setters](#typed-node-setters)
   - [Collections](#collections)
       * [Non-Array Collections](#non-array-collections)
       * [Typed Collections](#typed-collections)
@@ -117,7 +119,7 @@ json_spec spec_name do
   # Key-Array Nodes
   node_name Array #=> "node_name": [#{inst.node_name.each {|val| val}}]
   node_name Array, :symbol #=> "node_name": [#{inst.node_name.each(&:symbol)}]
-  node_name Array, get: proc set: proc {|parsed_array|}#=> "node_name": [#{inst.node_name.each(&proc)}]
+  node_name Array, get: proc set: proc {|parsed_array|} #=> "node_name": [#{inst.node_name.each(&proc)}]
 
   # Typed Key-Array Nodes (Exception on invalid types)
   node_name Array, type: Type, ... # Same operation as normal Key-Array nodes
@@ -163,11 +165,11 @@ Data.json_spec_schema(:typed)
   Raw data nodes may specify a data type. This will ensure the resulting data is of a given
   data type before generating the JSON object. 
 
-  Generating a schema from a typed node will set the value of the node to that type.
+  Generating a schema from a typed node will present the specified type upstream.
 ```ruby
 # Definition
 json_spec :typed do
-  id Integer
+  id type: Integer
 end
 
 # Result
@@ -183,7 +185,7 @@ Data.json_spec_schema(:typed)
 ```ruby
 # Definition
 json_spec :typed_inval do
-  not_a_string String
+  not_a_string type: String
 end
 
 # Result
@@ -221,24 +223,60 @@ data_inst.to_json(spec: :basic_def)
   #=> {"word": #{"hello".to_json}}
 ```
 
-### Basic Node Import
+### Basic Node Setters
+The spec system may also be used to update a data object based on an existing spec.
+
 ```ruby
   # Definition
-json_spec :basic_imp do
-  basic set: :set_basic
-  complex set: :set_attribute.caller_shift(:complex)
-  word set: :assign.caller_push(:word)
+json_spec :basic_set do
   custom set: proc {|value| set_custom('name', value, force: true)}
 end
 
 # Result
-DataClass.from_json({basic: 1, complex: 2, word: "hi", custom: 3}, spec: :basic_imp) 
+DataClass.from_json({custom: 1}, spec: :basic_imp) 
+# Same effect as: 
+#   data_inst.set_custom('name', 1, force: true)
+```
+
+### Extended Node Setters
+Setter shorthands may be used to provide common functionality without using a proc.
+
+```ruby
+  # Definition
+json_spec :extended_set do
+  basic set: :set_basic
+  complex set: :set_attribute.caller_shift(:complex)
+  word set: :assign.caller_push(:word)
+end
+
+# Result
+DataClass.from_json({basic: 1, complex: 2, word: "hi"}, spec: :basic_imp) 
 # Same effect as: 
 #   data_inst = DataClass.new
 #   data_inst.set_basic(1)
 #   data_inst.set_attribute(:complex, "hi")
 #   data_inst.assign("hi", :word)
-#   data_inst.set_custom('name', 3, force: true)
+```
+
+### Typed Node Setters
+For typed nodes, if the typed class responds to the "from_json" signal, the value passed
+to the setter will be parsed through this method.
+
+```ruby
+class Foo
+  def self.from_json(value) ... end
+end
+
+  # Definition
+json_spec :basic_set do
+  typed type: Foo, set: :set_typed
+end
+
+# Result
+DataClass.from_json({typed: "raw_data"}, spec: :basic_imp) 
+# Same effect as: 
+#   data_inst = DataClass.new
+#   data_inst.set_typed(Foo.from_json("raw_data"))
 ```
 
 ##
@@ -276,7 +314,7 @@ data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 ```
 
 ### Typed Collections
-  All the data nodes in a collection may specify a data type. This will ensure that all members
+  Data nodes in a collection may specify a data type. This will ensure that allmembers
   of the collection are of a given data type before generating the JSON object. Note, when 
   specifying a typed collection the first value of the type **must** be Array.
 
@@ -286,7 +324,7 @@ data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 ```ruby
 # Definition
 json_spec :typed do
-  post_ids [Array, Integer], get: proc {posts.map(&:id)}
+  post_ids Array, type: Integer, get: proc {posts.map(&:id)}
 end
 
 # Result
