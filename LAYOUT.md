@@ -3,16 +3,16 @@
 * lib/json_spec
   - json_spec_module.rb:
 
-    The modules that must be *prepended* to enable json_specs for a class. 
+      The modules that must be *prepended* to enable json_specs for a class. 
 
-    Extends the class with the entry function, a spec enumerator and schema generator entry
-    points. Also provides a path name to be used when storing specs.
+      Extends the class with the entry function, a spec enumerator and schema generator entry
+      points. Also provides a path name to be used when storing specs.
 
-    Injects the instance to_json and as_json methods.
+      Injects the instance to_json and as_json methods.
 
-    Calls out to JsonSpecGenerator in order to create a new spec.
+      Calls out to JsonSpecGenerator in order to create a new spec.
 
-    Calls out to JosnSpecData in order to utilize existing specs.
+      Calls out to JosnSpecData in order to utilize existing specs.
 
   - json_spec_generator.rb:
 
@@ -42,3 +42,8 @@
     Calls out to JsonSpecExports in order to generate proc objects used for exports.
 
     Calls out to JsonSpecImports in order to generate proc objects used for imports.
+
+  - json_spec_exports.rb AND json_spec_imports.rb
+
+    Helper classes used to generate proc objects used by JsonSpecData to perform operations
+    on class instances.
