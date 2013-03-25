@@ -55,8 +55,15 @@ class Sereth::JsonSpecData
 
   def initialize
     @raw = {}
+    # Holds the methods that will be executed to generate a spec
     @spec = Object.new
+    # Used to define methods on @spec
     @spec_class = class << @spec; self; end
+
+    # Holds the procs which will be used to update an instance, may be subset of full spec
+    @setters = {}
+
+    # Data for execution.
     @command_queue = []
     @if_count = 0
     # Array, since reference to spec needs to be available in a different context
@@ -80,28 +87,34 @@ class Sereth::JsonSpecData
 
   # Queue up a node_name accessor for standard attributes
   # Expectation: node_name always originates from a symbol, so no need to escape
-  def command!(node_name, type, gen_proc, subnode = nil)
+  def command!(node_name, array, subnode = nil, type: nil, get: nil, set: nil)
     # Add the command to the queue
     @command_queue.delete(node_name)
     @command_queue.push(node_name)
 
     # Generate the command on the spec object
-    generator = nil
-    if type.nil? 
-      generator = JsonSpecGetters.basic!(node_name, type, gen_proc, subnode)
-    elsif type == Array
-      generator = JsonSpecGetters.collection!(node_name, type, gen_proc, subnode)
+    exporter = nil
+
+    if array && type.nil?
+      exporter = JsonSpecExports.collection!(node_name, type, get, subnode)
+    elsif array && type.is_a?(Class)
+      exporter = JsonSpecExports.typed_collection!(node_name, type, get, subnode)
+    elsif type.nil? 
+      exporter = JsonSpecExports.basic!(node_name, type, get, subnode)
     elsif type.is_a?(Class)
-      generator = JsonSpecGetters.typed_basic!(node_name, type, gen_proc, subnode)
-    elsif type.is_a?(Array) && type.first == Array
-      generator = JsonSpecGetters.typed_collection!(node_name, type[1], gen_proc, subnode)
+      exporter = JsonSpecExports.typed_basic!(node_name, type, get, subnode)
     else
       # Handle invalid types
       raise "Invalid json_spec type: #{type}"
     end
 
+    # Generate the importer object
+    if set.is_a?(Proc) || set.is_a?(Symbol)
+      @setters[node_name] = set
+    end
+
     # Declare the generator method in the data object
-    @spec_class.send :define_method, node_name, &generator
+    @spec_class.send :define_method, node_name, &exporter
     @raw[node_name] = type
   end
   

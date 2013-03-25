@@ -35,7 +35,10 @@ module Sereth
       arr = (sym_or_arr == Array)
       # Get symbol param shorthand
       sym = sym_or_arr if sym_or_arr.kind_of?(Symbol)
-      get = sym if get.nil? && sym.is_a?(Symbol)
+      # The data getter will query the function named by the specified getter symbol if set
+      get ||= sym if sym.is_a?(Symbol)
+      # The data getter will fall back to querying the same function as the node name
+      get ||= node_name
 
       if block
         # Objects do not support extended options. Use keys in the subnode.
