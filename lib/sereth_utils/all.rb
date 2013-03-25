@@ -1,3 +1,5 @@
+# Ensure the sereth namespace exists
+module Sereth; end
 
 raise LoadError, 'Ruquires Ruby 2' if !RUBY_VERSION.match(/^2/)
 require 'rubygems'
