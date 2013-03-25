@@ -20,10 +20,11 @@
 
   - **json_spec_generator.rb**
 
-      Context class used to provide the json_spec DSL during spec generation.
+      Context class used to provide the json_spec DSL during spec generation. Responsible for
+      ensuring the proper instance of JsonSpecData is being populated.
 
       Provides commands if!, override!, extends!. All other method calls evaluate to node
-      names, and are used to populate the JsonSpecData instance for this generator.
+      names. Both are used to populate the current JsonSpecData instance for this generator.
 
       Calls out to JsonSpec data in order to sotre configured data nodes, and to retrieve
       previously configured data nodes for extension.
