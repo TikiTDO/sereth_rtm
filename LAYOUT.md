@@ -1,7 +1,7 @@
 # Sereth JSON Spec Code Layout
 
 * lib/json_spec
-  - json_spec_module.rb:
+  - **json_spec_module.rb**
 
       The modules that must be *prepended* to enable json_specs for a class. 
 
@@ -14,7 +14,7 @@
 
       Calls out to JosnSpecData in order to utilize existing specs.
 
-  - json_spec_generator.rb:
+  - **json_spec_generator.rb**
 
       Context class used to provide the json_spec DSL during spec generation.
 
@@ -24,7 +24,7 @@
       Calls out to JsonSpec data in order to sotre configured data nodes, and to retrieve
       previously configured data nodes for extension.
 
-  - json_spec_data.rb
+  - **json_spec_data.rb**
 
       Storage class used to store all top-level instances of the configured specs, and to 
       utilize this data to generate json from an object, or update and object from json.
@@ -43,7 +43,7 @@
 
       Calls out to JsonSpecImports in order to generate proc objects used for imports.
 
-  - json_spec_exports.rb AND json_spec_imports.rb
+  - **json_spec_exports.rb** AND **json_spec_imports.rb**
 
       Helper classes used to generate proc objects used by JsonSpecData to perform operations
       on class instances.
