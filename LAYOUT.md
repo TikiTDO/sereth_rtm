@@ -16,34 +16,34 @@
 
   - json_spec_generator.rb:
 
-    Context class used to provide the json_spec DSL during spec generation.
+      Context class used to provide the json_spec DSL during spec generation.
 
-    Provides commands if!, override!, extends!. All other method calls evaluate to node
-    names, and are used to populate the JsonSpecData instance for this generator.
+      Provides commands if!, override!, extends!. All other method calls evaluate to node
+      names, and are used to populate the JsonSpecData instance for this generator.
 
-    Calls out to JsonSpec data in order to sotre configured data nodes, and to retrieve
-    previously configured data nodes for extension.
+      Calls out to JsonSpec data in order to sotre configured data nodes, and to retrieve
+      previously configured data nodes for extension.
 
   - json_spec_data.rb
 
-    Storage class used to store all top-level instances of the configured specs, and to 
-    utilize this data to generate json from an object, or update and object from json.
+      Storage class used to store all top-level instances of the configured specs, and to 
+      utilize this data to generate json from an object, or update and object from json.
 
-    Provides special mechanism for preparing generator commands and raw nodes for export and
-    import. Also performs actual export and import using the prepared resources.
+      Provides special mechanism for preparing generator commands and raw nodes for export and
+      import. Also performs actual export and import using the prepared resources.
 
-    Uses function definition for generating export handlers. Functions have access
-    to the context of the function generator which stores the name and subnode information, 
-    and perform better than hashes.
+      Uses function definition for generating export handlers. Functions have access
+      to the context of the function generator which stores the name and subnode information, 
+      and perform better than hashes.
 
-    Uses a standard hash map for import handlers. Hash map provides finer level of control at
-    the expense of speed. This may be necessary since imported data may be provided by user.
+      Uses a standard hash map for import handlers. Hash map provides finer level of control at
+      the expense of speed. This may be necessary since imported data may be provided by user.
 
-    Calls out to JsonSpecExports in order to generate proc objects used for exports.
+      Calls out to JsonSpecExports in order to generate proc objects used for exports.
 
-    Calls out to JsonSpecImports in order to generate proc objects used for imports.
+      Calls out to JsonSpecImports in order to generate proc objects used for imports.
 
   - json_spec_exports.rb AND json_spec_imports.rb
 
-    Helper classes used to generate proc objects used by JsonSpecData to perform operations
-    on class instances.
+      Helper classes used to generate proc objects used by JsonSpecData to perform operations
+      on class instances.
