@@ -12,7 +12,7 @@ module Sereth
     end
   end
 
-  # A dummy JSON 
+  # A dummy object for representing the instance of the item being jsonified.
   class JsonDummy
     def initialize(prefix = nil)
       @prefix = prefix
