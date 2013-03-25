@@ -2,6 +2,8 @@
 
   ***UNDER DEVELOPMENT - NOT READY FOR USE***
 
+  **Requires Ruby 2.0**
+
   Sereth JSON Spec is a rails plugin based on the idea of treating models like
   API objects exported through JSON. It breaks with the rails convention of treating
   these objects as views, and instead defines different perspectives as core features
@@ -108,7 +110,7 @@ end
 ##
   Note, all values pass through `.to_json` unless otherwise noted
 ```ruby
-json_spec spec_name do
+json_spec :spec_name do
   ## Nodes
   # Key-Value Nodes
   node_name #=> "node_name": #{inst.node_name}
