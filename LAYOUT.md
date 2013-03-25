@@ -1,6 +1,7 @@
 # Sereth JSON Spec Code Layout
 
 * lib/sereth_utils
+
     Tools to provide generalized features. Will eventually break off into a separate gem.
 
 * lib/json_spec
