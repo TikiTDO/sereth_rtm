@@ -9,7 +9,7 @@ module Sereth::JsonSpec
 
     # Returns a json listing of fields. The values of fields will and field types (if possible)
     def json_spec_schema(spec)
-      Data.export(self.name, spec, DummyUtil.new)
+      Data.export(json_spec_path, spec, DummyUtil.new)
     end
 
     # Iterate over all the specs defined in the current class
@@ -20,7 +20,7 @@ module Sereth::JsonSpec
     # Registered a new spec of a given name
     def json_spec(name, &block)
       # Parse the input token data
-      Generator.generate(json_spec_path, name, &block)
+      Data.generate(json_spec_path, name, &block)
     end
   end
 

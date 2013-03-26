@@ -5,7 +5,6 @@ module Sereth::JsonSpec
       respond_to?)
     instance_methods.each {|m| undef_method(m) unless core_methods.include?(m.to_s)}
 
-    private
     # Initialize the Spec path, name, and data store
     def initialize(path, name, data_store)
       @path = path
@@ -13,8 +12,8 @@ module Sereth::JsonSpec
       @data_store = data_store
     end
 
-    public
     ## Primary node creation mechanism
+    private
     # Generate a new JsonSpecData instance, and populates it with a
     def generate_subnode!(&block)
       # Generate and populate sub-node 
@@ -23,6 +22,7 @@ module Sereth::JsonSpec
       return subnode
     end
 
+    public
     # Tell the system that all function names are valid
     def respond_to_missing?(node_name, include_private = false)
       return true
@@ -49,7 +49,7 @@ module Sereth::JsonSpec
         raise "Getter must not be a lambda" if get.is_a?(Proc) && get.lambda?
         raise "Setter must not be a lambda" if set.is_a?(Proc) && set.lambda?
         raise "Type must be a class" if !type.nil? && !type.is_a?(Class)
-        @data_store.command!(node_name, arr, subnode, type: type, get: get, set: set)
+        @data_store.command!(node_name, arr, nil, type: type, get: get, set: set)
       end
     end
 

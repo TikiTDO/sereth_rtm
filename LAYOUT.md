@@ -5,7 +5,7 @@
     Tools to provide generalized features. Will eventually break off into a separate gem.
 
 * lib/json_spec
-  - **json_spec_module.rb**
+  - **api.rb**
 
       The modules that must be *prepended* to enable json_specs for a class. 
 
@@ -18,7 +18,7 @@
 
       Calls out to JosnSpecData in order to utilize existing specs.
 
-  - **json_spec_generator.rb**
+  - **generator.rb**
 
       Context class used to provide the json_spec DSL during spec generation. Responsible for
       ensuring the proper instance of JsonSpecData is being populated.
@@ -29,7 +29,7 @@
       Calls out to JsonSpec data in order to sotre configured data nodes, and to retrieve
       previously configured data nodes for extension.
 
-  - **json_spec_data.rb**
+  - **data.rb**
 
       Storage class used to store all top-level instances of the configured specs, and to 
       utilize this data to generate json from an object, or update and object from json.
@@ -48,7 +48,7 @@
 
       Calls out to JsonSpecImports in order to generate proc objects used for imports.
 
-  - **json_spec_exports.rb** AND **json_spec_imports.rb**
+  - **exports.rb** AND **imports.rb**
 
       Helper classes used to generate proc objects used by JsonSpecData to perform operations
       on class instances.
