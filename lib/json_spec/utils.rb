@@ -1,19 +1,19 @@
-module Sereth
+module Sereth::JsonSpec
   # The runner is used to queue up the to_json call for use with as_json
-  class JsonRunner
+  class RunnerUtil
     def initialize(path, name, inst)
       @path = path
       @name = name
       @inst = inst
     end
 
-    def to_json
-      Sereth::JsonSpecGenerator.parse(@path, @name, @inst)
+    def to_json(*_)
+      Data.export(@path, @name, @inst)
     end
   end
 
   # A dummy object for representing the instance of the item being jsonified.
-  class JsonDummy
+  class DummyUtil
     def initialize(prefix = nil)
       @prefix = prefix
     end

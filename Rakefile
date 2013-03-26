@@ -1,3 +1,11 @@
+require 'rubygems'
+require 'bundler'
+Bundler.setup
+
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
+task :default => :spec
+
 project_name = "json_spec" 
 
 desc 'Enable development commands'

@@ -1,5 +1,5 @@
-module Sereth
-  class JsonSpecGenerator
+module Sereth::JsonSpec
+  class Generator
     # Remove all potentially unnecessary methods
     core_methods = %w(__id__ __send__ object_id instance_eval methods class nil? is_a?
       respond_to?)
@@ -18,7 +18,7 @@ module Sereth
     # Generate a new JsonSpecData instance, and populates it with a
     def generate_subnode!(&block)
       # Generate and populate sub-node 
-      subnode = Sereth::JsonSpecData.new
+      subnode = Data.new
       self.class.new(@path, @name, subnode).instance_eval(&block)
       return subnode
     end
@@ -78,7 +78,7 @@ module Sereth
       name = path_or_name if name.nil?
         
       # Supply the extension info to underlying data object
-      @data_store.extends!(JsonSpecData.get(path, name))
+      @data_store.extends!(Data.get(path, name))
     end
   end
 end

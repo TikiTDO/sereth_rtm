@@ -41,7 +41,7 @@ module Sereth
 
     # Extend target with the proper singleton methods
     def self.included(target)
-      target.send(:extend, BindingStageExtender)
+      target.send(:extend, StageBindingExtender)
     end
   end
 
