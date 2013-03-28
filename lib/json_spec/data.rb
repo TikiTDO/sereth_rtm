@@ -23,7 +23,7 @@ module Sereth::JsonSpec
 
       def generate(path, name, &block)
         data_inst = self.new
-        Generator.new(path, name, @specs[key]).instance_eval(&block)
+        Generator.new(path, name, data_inst).instance_eval(&block)
 
         @specs[[path, name]] = data_inst
       end
@@ -177,8 +177,9 @@ module Sereth::JsonSpec
       each_command! do |command, complete|
         res = @spec.send(command, inst, complete)
         ret << ph << res if res
-        ph = ", " if ph == ""
+        ph = "," if ph == ""
       end
+      return ret
     end
 
     # Execute the spec for the given instance, and place the result in an object

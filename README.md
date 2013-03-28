@@ -4,10 +4,8 @@
 
   **Requires Ruby 2.0**
 
-  Sereth JSON Spec is a rails plugin based on the idea of treating models like
-  API objects exported through JSON. It breaks with the rails convention of treating
-  these objects as views, and instead defines different perspectives as core features
-  of the data model. 
+  Sereth JSON Spec is a ruby library based on the idea of treating data instances like
+  context sensitive API objects exported through JSON. 
 
   The library may also be used to generate examples of blank data schemas to populate
   scripts, and to export to web-based API editors.
@@ -20,16 +18,16 @@
   - [Import](#import)
 2. [API Overview](#api-overview)
   - [Basic Nodes](#basic-nodes)
-      * [Typed Nodes](#typed-values)
       * [Dynamic Nodes](#dynamic-nodes)
+      * [Typed Nodes](#typed-values)
       * [Default Values](#default-values)
       * [Basic Node Setters](#basic-node-setters)
       * [Extended Node Setters](#extended-node-setters)
       * [Typed Node Setters](#typed-node-setters)
   - [Collections](#collections)
       * [Non-Array Collections](#non-array-collections)
-      * [Typed Collections](#typed-collections)
       * [Dynamic Collections](#dynamic-collections)
+      * [Typed Collections](#typed-collections)
       * [Collection Import](#collection-import)
   - [Objects](#objects)
       * [Object Collections](#object-collections)
@@ -165,11 +163,28 @@ Data.json_spec_schema(:typed)
   #=> {"id": "BasicValue"}  
 ```
 
-### Typed Nodes
-  Raw data nodes may specify a data type. This will ensure the resulting data is of a given
-  data type before generating the JSON object. 
+### Dynamic Nodes
+  More fine grained control of the node value can be achieved with procs
+```ruby
+# Definition
+json_spec :basic_proc do
+  id get: proc {other_id}
+  tag :email
+end
 
-  Generating a schema from a typed node will present the specified type upstream.
+# Result
+data_inst.to_json(spec: :basic_proc) 
+  #=> {
+    # "id": "#{data_inst.other_id.to_json}",  
+    # "tag": #{data_inst.email.to_json}}
+```
+
+### Typed Nodes
+  Raw data nodes may specify a data type. This is used primarily for schema generation,
+  for use with ustream editors. 
+
+  However, the system will also verify the data type of the object before writing it into 
+  JSON from an export, and will attempt to parse the JSON input into this type during import.
 ```ruby
 # Definition
 json_spec :typed do
@@ -195,22 +210,6 @@ end
 # Result
 data_inst.to_json(spec: :typed_inval) 
   #=> Error: not_a_string fails data type contraints
-```
-
-### Dynamic Nodes
-  More fine grained control of the node value can be achieved with procs
-```ruby
-# Definition
-json_spec :basic_proc do
-  id get: proc {other_id}
-  tag :email
-end
-
-# Result
-data_inst.to_json(spec: :basic_proc) 
-  #=> {
-    # "id": "#{data_inst.other_id.to_json}",  
-    # "tag": #{data_inst.email.to_json}}
 ```
 
 ### Default Values
@@ -295,7 +294,7 @@ json_spec :col do
 end
 
 # Result
-data_inst.to_json(spec: :col) #=> {"nodes": [node1.to_json, node2.to_json...]}  
+data_inst.to_json(spec: :col) #=> {"nodes": [nodes[0].to_json, nodes[1].to_json...]}  
 
 # Schema Result
 Data.json_spec_schema(:typed)
@@ -317,6 +316,24 @@ end
 data_inst.to_json(spec: :col_non_array) #=> "{"key": ["asdf".to_json]}"
 ```
 
+### Dynamic Collections
+  Collection generation may be extended with blocks or generator functions.
+```ruby
+# Definition
+json_spec :col_block do
+  nodes Array, :symbol
+  others Array, get: proc {gen_other}
+  data_ids Array, get: proc{data.map(&:id)}
+end
+
+# Result
+data_inst.to_json(spec: :col_block) #=> {
+  # "nodes": [symbol[0].to_json, symbol[1].to_json...],
+  # "others": [gen_other[0].to_json, gen_others[1].to_json...]}
+  # "data_ids": [data[0].id.to_json, data[1].id.to_json...]}
+```
+
+
 ### Typed Collections
   Data nodes in a collection may specify a data type. This will ensure that allmembers
   of the collection are of a given data type before generating the JSON object. Note, when 
@@ -337,21 +354,6 @@ end
 # Schema Result
 Data.json_spec_schema(:typed)
   #=> {"post_id": ['Integer']}  
-```
-
-### Dynamic Collections
-  Collection generation may be extended with blocks or generator functions.
-```ruby
-# Definition
-json_spec :col_block do
-  nodes Array, :symbol
-  others Array, get: proc {gen_other}
-end
-
-# Result
-data_inst.to_json(spec: :col_block) #=> {
-  # "nodes": [node1.symbol.to_json, node2.symbol.to_json...],
-  # "others": [gen_other1.to_json, gen_other2.to_json...]}
 ```
 
 ##

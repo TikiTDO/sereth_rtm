@@ -12,5 +12,6 @@ gem 'sourcify'
 gem 'json'
 
 ## Testing
+gem 'spork'
 gem 'rspec'
 gem 'mocha', :require => false

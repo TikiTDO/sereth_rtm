@@ -1,5 +1,16 @@
-require 'json_spec'
+# Spork Config
+require 'rubygems'
+require 'spork'
 
+Spork.prefork do
+  require 'json'
+end
+
+Spork.each_run do
+  require 'json_spec'
+end
+
+# RSpec Config
 require 'rspec/autorun'
 require 'mocha/api'
 

@@ -1,10 +1,10 @@
 module Sereth::JsonSpec
   # Code generator to create functions that will extract an attribute from an object
-  class Getters
+  class Exports
     class << self
       ## Handler Generation
       # Create a handler for normal nodes
-      def generate_basic!(node_name, type, gen_proc, subnode = nil)
+      def basic!(node_name, type, gen_proc, subnode = nil)
         # Handle normal objects
         if gen_proc
           # Proc based node value
@@ -28,7 +28,7 @@ module Sereth::JsonSpec
       end
 
       # Create a handler for typed nodes
-      def generate_typed_basic!(node_name, type, gen_proc, subnode = nil)
+      def typed_basic!(node_name, type, gen_proc, subnode = nil)
         # Handle typed objects - Requires extra handling for schema generation
         if gen_proc
           # Proc based node value
@@ -69,7 +69,7 @@ module Sereth::JsonSpec
       end
 
       # Create a handler for normal collections
-      def generate_collection!(node_name, type, gen_proc, subnode = nil)
+      def collection!(node_name, type, gen_proc, subnode = nil)
         # Handle collections
         if gen_proc
           # Proc based array values
@@ -104,7 +104,7 @@ module Sereth::JsonSpec
       end
 
       # Create a handler for typed collections
-      def generate_typed_collection!(node_name, type, gen_proc, subnode = nil)
+      def typed_collection!(node_name, type, gen_proc, subnode = nil)
         # Handle collections
         if gen_proc
           # Proc based array values
