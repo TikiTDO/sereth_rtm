@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.0.0"
 
   s.name        = 'json_spec'
-  s.version     = '0.9.0'
+  s.version     = '1.0beta1'
   s.date        = '2013-03-27'
   s.summary     = "Sereth JSON Specification gem"
   s.description = "A gem to generate JSON specification from classes"

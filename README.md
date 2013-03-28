@@ -1,6 +1,6 @@
 # Sereth JSON Spec
 
-  ***UNDER DEVELOPMENT - NOT READY FOR USE***
+  ***Beta Version - Use at your own risk***
 
   **Requires Ruby 2.0**
 
