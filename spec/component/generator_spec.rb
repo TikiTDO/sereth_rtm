@@ -31,7 +31,7 @@ describe :generator do
       Sereth::JsonSpec::Data.expects(:new).once.returns(subnode_mock_data)
 
       @mock_data.stubs(:command!).once.
-        with(:test_node, false, subnode_mock_data)
+        with(:test_node, false, subnode_mock_data, {:get => :test_node})
       @gen.test_node do end
     end
 
@@ -41,7 +41,7 @@ describe :generator do
       Sereth::JsonSpec::Data.expects(:new).once.returns(subnode_mock_data)
 
       @mock_data.stubs(:command!).once.
-        with(:test_node, true, subnode_mock_data)
+        with(:test_node, true, subnode_mock_data, {:get => :test_node})
       @gen.test_node Array do end
     end
   end

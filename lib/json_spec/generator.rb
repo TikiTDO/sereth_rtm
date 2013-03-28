@@ -44,7 +44,7 @@ module Sereth::JsonSpec
         # Objects do not support extended options. Use keys in the subnode.
         subnode = generate_subnode!(&block) if !block.nil?
         subnode ||= nil
-        @data_store.command!(node_name, arr, subnode)
+        @data_store.command!(node_name, arr, subnode, get: get)
       else
         raise "Getter must not be a lambda" if get.is_a?(Proc) && get.lambda?
         raise "Setter must not be a lambda" if set.is_a?(Proc) && set.lambda?

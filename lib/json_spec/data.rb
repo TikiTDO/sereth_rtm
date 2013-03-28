@@ -7,8 +7,13 @@ module Sereth::JsonSpec
     @alias_getter = lambda {}
 
     class << self
-      def import(path, name, inst, spec)
-        raise 'TODO'
+      def import(path, name, inst, data)
+        spec = self.get(path, name)
+        if !spec.nil?
+          spec.import!(inst, data)
+        else
+          raise "Error: Spec #{path}/#{name} not defined"
+        end
       end
 
       def export(path, name, inst)
@@ -16,8 +21,7 @@ module Sereth::JsonSpec
         if !spec.nil?
           spec.export!(inst)
         else
-          #Sereth::JsonSpecGenerator.error("Perspective not found: #{path}/#{name}")
-          raise "No Spec"
+          raise "Error: Spec #{path}/#{name} not defined"
         end
       end
 
@@ -45,7 +49,7 @@ module Sereth::JsonSpec
 
     ## Spec Initialization
     # Receive responder queries from extending spec
-    def respond_to_missing?(node_name)
+    def respond_to_missing?(node_name, include_all = nil)
       @spec.send(:respond_to_missing?, node_name)
     end
 
@@ -63,6 +67,7 @@ module Sereth::JsonSpec
 
       # Holds the procs which will be used to update an instance, may be subset of full spec
       @setters = {}
+      @subnodes = {}
 
       # Data for execution.
       @command_queue = []
@@ -111,7 +116,9 @@ module Sereth::JsonSpec
 
       # Generate the importer object
       if set.is_a?(Proc) || set.is_a?(Symbol)
-        @setters[node_name] = set
+        @setters[node_name.to_s] = Imports.basic!(set)
+      elsif !subnode.nil?
+        @setters[node_name.to_s] = Imports.subnode!(subnode, get)
       end
 
       # Declare the generator method in the data object
@@ -127,11 +134,11 @@ module Sereth::JsonSpec
 
       # Conditionals should not 
       conditional = proc do |inst, *extra|
-        if inst.is_a?(JsonDummy)
+        if inst.is_a?(DummyUtil)
           inst = DummyUtil.new('Conditional')
           result = true
         else
-          result = cond_proc.call(inst)
+          result = inst.instance_eval(&cond_proc)
         end
         return subnode.export_inside!(inst) if result && subnode
         return nil
@@ -185,6 +192,26 @@ module Sereth::JsonSpec
     # Execute the spec for the given instance, and place the result in an object
     def export!(inst)
       '{' << export_inside!(inst) << '}'
+    end
+
+    # Retrieve the data import handlers for this spec, and any extended specs
+    def get_setters!
+      return @extended_spec.first.get_setter!.merge(@setters) if !@extended_spec.empty?
+      return @setters
+    end
+
+    # Perform the data import operations for the current context
+    def import!(inst, data)
+      # The data being populated must be a hash
+      return if data.nil?
+      raise "Data must be an object." if !data.is_a?(Hash)
+
+      # Perform the import operations on all requested elements
+      setters =  get_setters!
+      data.each do |key, val|
+        setter = setters[key]
+        setter.call(inst, val) if !setter.nil?
+      end
     end
   end
 end

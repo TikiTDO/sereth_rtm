@@ -10,18 +10,18 @@ module Sereth::JsonSpec
           # Proc based node value
           return proc do |inst, *extra|
             if subnode
-              "\"#{node_name}\": #{subnode.execute!(inst.instance_eval(&gen_proc))}"
+              "\"#{node_name}\":#{subnode.export!(inst.instance_eval(&gen_proc))}"
             else
-              "\"#{node_name}\": #{inst.instance_eval(&gen_proc).to_json}"
+              "\"#{node_name}\":#{inst.instance_eval(&gen_proc).to_json}"
             end
           end
         else
           # Basic node value
           return proc do |inst, *extra|
             if subnode
-              "\"#{node_name}\": #{subnode.execute!(inst.send(node_name))}"
+              "\"#{node_name}\":#{subnode.export!(inst.send(node_name))}"
             else
-              "\"#{node_name}\": #{inst.send(node_name).to_json}"
+              "\"#{node_name}\":#{inst.send(node_name).to_json}"
             end
           end
         end
@@ -34,15 +34,15 @@ module Sereth::JsonSpec
           # Proc based node value
           return proc do |inst, *extra|
             item = inst.instance_eval(&gen_proc)
-            is_dummy = item.is_a?(JsonDummy)
+            is_dummy = item.is_a?(DummyUtil)
             if item.is_a?(type) || item.nil? || is_dummy
               if subnode
-                "\"#{node_name}\": #{subnode.execute!(item)}"
+                "\"#{node_name}\":#{subnode.export!(item)}"
               else
                 if is_dummy
-                  "\"#{node_name}\": #{item.to_json(type)}"
+                  "\"#{node_name}\":#{item.to_json(type)}"
                 else
-                  "\"#{node_name}\": #{item.to_json}"
+                  "\"#{node_name}\":#{item.to_json}"
                 end
               end
             else
@@ -53,13 +53,13 @@ module Sereth::JsonSpec
           # Basic node value
           return proc do |inst, *extra|
             item = inst.send(node_name)
-            is_dummy = item.is_a?(JsonDummy)
+            is_dummy = item.is_a?(DummyUtil)
             if item.is_a?(type) || item.nil? || is_dummy
               if subnode
-                "\"#{node_name}\": #{subnode.execute!(item)}"
+                "\"#{node_name}\":#{subnode.export!(item)}"
               else
-                next "\"#{node_name}\": #{item.to_json(type)}" if is_dummy
-                next "\"#{node_name}\": #{item.to_json}"
+                next "\"#{node_name}\":#{item.to_json(type)}" if is_dummy
+                next "\"#{node_name}\":#{item.to_json}"
               end
             else
               raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
@@ -79,12 +79,12 @@ module Sereth::JsonSpec
             pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
             if subnode
-              parsed = pre_parse.map{|item| subnode.execute!(item)}
+              parsed = pre_parse.map{|item| subnode.export!(item)}
             else
               parsed = pre_parse.map{|item| item.to_json}
             end
 
-            "\"#{node_name}\": [#{parsed.join(",")}]"
+            "\"#{node_name}\":[#{parsed.join(",")}]"
           end
         else
           # Basic array values
@@ -93,12 +93,12 @@ module Sereth::JsonSpec
             pre_parse = [pre_parse] if !pre_parse.kind_of?(Array)
 
             if subnode
-              parsed = pre_parse.map{|item| subnode.execute!(item)}
+              parsed = pre_parse.map{|item| subnode.export!(item)}
             else
               parsed = pre_parse.map{|item| item.to_json}
             end
 
-            "\"#{node_name}\": [#{parsed.join(",")}]"
+            "\"#{node_name}\":[#{parsed.join(",")}]"
           end
         end
       end
@@ -115,18 +115,18 @@ module Sereth::JsonSpec
 
             if subnode
               parsed = pre_parse.map do |item|
-                next subnode.execute!(item) if item.is_a?(type) || item.is_a?(JsonDummy)
+                next subnode.export!(item) if item.is_a?(type) || item.is_a?(DummyUtil)
                 raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
               end
             else
               parsed = pre_parse.map do |item| 
-                next item.to_json(type) if item.is_a?(JsonDummy)
+                next item.to_json(type) if item.is_a?(DummyUtil)
                 next item.to_json if item.is_a?(type)
                 raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
               end
             end
 
-            "\"#{node_name}\": [#{parsed.join(",")}]"
+            "\"#{node_name}\":[#{parsed.join(",")}]"
           end
         else
           # Basic array values
@@ -136,18 +136,18 @@ module Sereth::JsonSpec
 
             if subnode
               parsed = pre_parse.map do |item|
-                next subnode.execute!(item) if item.is_a?(type) || item.is_a?(JsonDummy)
+                next subnode.export!(item) if item.is_a?(type) || item.is_a?(DummyUtil)
                 raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
               end
             else
               parsed = pre_parse.map do |item| 
-                next item.to_json(type) if item.is_a?(JsonDummy)
+                next item.to_json(type) if item.is_a?(DummyUtil)
                 next item.to_json if item.is_a?(type)
                 raise "Invalid type in JSON spec: Expected [#{type}] got #{item.class}"
               end
             end
 
-            "\"#{node_name}\": [#{parsed.join(",")}]"
+            "\"#{node_name}\":[#{parsed.join(",")}]"
           end
         end
       end

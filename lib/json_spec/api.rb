@@ -38,7 +38,7 @@ module Sereth::JsonSpec
   def to_json(options = {})
     if options.has_key?(:spec)
       Data.export(self.class.json_spec_path, options[:spec], self)
-    else
+    elsif defined?(super)
       super
     end
   end
@@ -48,6 +48,16 @@ module Sereth::JsonSpec
     if options.has_key?(:spec)
       RunnerUtil.new(self.class.json_spec_path, options[:spec], self)
     else
+      super
+    end
+  end
+
+  # Perform the import operation
+  def from_json(data, options)
+    data = JSON.parse(data) if data.is_a?(String)
+    if options.has_key?(:spec)
+      Data.import(self.class.json_spec_path, options[:spec], self, data)
+    elsif defined?(super)
       super
     end
   end
