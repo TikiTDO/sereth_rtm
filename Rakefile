@@ -6,7 +6,7 @@ require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
 task :default => :spec
 
-project_name = "json_spec" 
+project_name = "sereth_json_spec" 
 
 desc 'Enable development commands'
 task :devel do |task|
