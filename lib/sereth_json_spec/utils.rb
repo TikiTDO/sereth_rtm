@@ -34,4 +34,25 @@ module Sereth::JsonSpec
       self
     end
   end
+
+  # Info about the failed export
+  class ExportError < StandardError
+    def initialize(path, name, child = nil)
+      @path = path
+      @name = name
+      @child = child
+    end
+
+    def message
+      ret = "Error exporting JSON data for [#{@path}/#{@name}]"
+      if @child
+        ret << ":\n\t"
+        ret << @child.message
+      end
+    end
+
+    def backtrace
+      @child.backtrace
+    end
+  end
 end

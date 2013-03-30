@@ -15,10 +15,12 @@ module Sereth::JsonSpec
     ## Primary node creation mechanism
     private
     # Generate a new JsonSpecData instance, and populates it with a
-    def generate_subnode!(&block)
+    def generate_subnode!(node_name = nil, &block)
       # Generate and populate sub-node 
-      subnode = Data.new
-      self.class.new(@path, @name, subnode).instance_eval(&block)
+      new_name = "#{@name}/#{node_name}" if !node_name.nil?
+      new_name ||= @name
+      subnode = Data.new(@path, new_name)
+      self.class.new(@path, new_name, subnode).instance_eval(&block)
       return subnode
     end
 
@@ -42,7 +44,7 @@ module Sereth::JsonSpec
 
       if block
         # Objects do not support extended options. Use keys in the subnode.
-        subnode = generate_subnode!(&block) if !block.nil?
+        subnode = generate_subnode!(node_name, &block) if !block.nil?
         subnode ||= nil
         @data_store.command!(node_name, arr, subnode, get: get)
       else

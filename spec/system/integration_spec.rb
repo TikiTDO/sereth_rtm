@@ -225,6 +225,25 @@ describe 'json_spec operaion' do
     end
   end
 
+  context 'error handing' do
+    it 'key does not exist' do
+      @target_class.json_spec :err_dne do
+        dne
+      end
+
+      expect{@target.to_json(spec: :err_dne)}.to raise_error(Sereth::JsonSpec::ExportError)
+    end
+
+    it 'key triggers error' do
+      @target_class.json_spec :err_dne do
+        err
+      end
+
+      expect{@target.to_json(spec: :err_dne)}.to raise_error(Sereth::JsonSpec::ExportError)
+    end
+  end
+
+
   context 'imports' do
     it 'basic imports' do
       @target_class.json_spec :import do

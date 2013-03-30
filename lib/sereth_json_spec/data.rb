@@ -26,7 +26,7 @@ module Sereth::JsonSpec
       end
 
       def generate(path, name, &block)
-        data_inst = self.new
+        data_inst = self.new(path, name)
         Generator.new(path, name, data_inst).instance_eval(&block)
 
         @specs[[path, name]] = data_inst
@@ -58,7 +58,9 @@ module Sereth::JsonSpec
       @spec.send(method, *args, &block)
     end
 
-    def initialize
+    def initialize(path, name)
+      @path = path
+      @name = name
       @raw = {}
       # Holds the methods that will be executed to generate a spec
       @spec = Object.new
@@ -182,9 +184,15 @@ module Sereth::JsonSpec
       ph = ""
       # Run every command from the command queue
       each_command! do |command, complete|
-        res = @spec.send(command, inst, complete)
-        ret << ph << res if res
-        ph = "," if ph == ""
+        begin
+          res = @spec.send(command, inst, complete)
+          ret << ph << res if res
+          ph = "," if ph == ""
+        rescue ExportError => e
+          raise e
+        rescue => e
+          raise ExportError.new(@path, @name, e)
+        end
       end
       return ret
     end
