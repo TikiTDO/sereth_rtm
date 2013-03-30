@@ -54,7 +54,10 @@
 class Data
   # Some record initialization
   # ...
-
+  
+  # Enable JsonSpec for this object
+  prepend Sereth::JsonSpec
+  
   # Perspective initializations
   json_spec :name do
     # Configuration for spec imports and exports
