@@ -154,6 +154,9 @@ end
 data_inst.to_json(spec: :basic) 
   #=> {"id": #{data_inst.id.to_json}}
 
+data_inst.to_json(spec: :basic, escape: true) 
+  #=> {\"id\": #{data_inst.id.to_json.to_json}}
+
 
 # Schema Result
 Data.json_spec_schema(:typed)

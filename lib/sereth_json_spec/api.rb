@@ -34,10 +34,15 @@ module Sereth::JsonSpec
   end
 
   # Export item as JSON of a given spec. An invalid spec will generate
-  # an exception
-  def to_json(options = {})
-    if options.has_key?(:spec)
-      Data.export(self.class.json_spec_path, options[:spec], self)
+  # an exception. Will optionally extra-escape data for inclusion in initial template.
+  def to_json(_ = {}, spec: nil, escape: false)
+    if spec
+      ret = Data.export(self.class.json_spec_path, spec, self)
+      if escape
+        ret = ret.to_json
+        ret = ret.html_safe if ret.responds_to?(:html_safe)
+      end
+      return ret
     elsif defined?(super)
       super
     end
