@@ -1,5 +1,5 @@
 module Sereth::JsonSpec
-  module Extender
+  module ClassMethods
     # Generate the active path of this spec, for use with sub-specs
     def json_spec_path
       path = self.collection_name if self.respond_to? :collection_name
@@ -30,7 +30,7 @@ module Sereth::JsonSpec
 
   # Set up the default spec
   def self.prepended(target)
-    target.send(:extend, Extender)
+    target.send(:extend, ClassMethods)
   end
 
   # Export item as JSON of a given spec. An invalid spec will generate

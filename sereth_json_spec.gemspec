@@ -18,4 +18,5 @@ Gem::Specification.new do |s|
   s.add_dependency('json')
 
   s.files       = `git ls-files -- lib/*`.split("\n")
+  s.test_files  = `git ls-files -- spec/*`.split("\n")
 end

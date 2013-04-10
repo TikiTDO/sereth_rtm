@@ -1,22 +1,25 @@
-# Sereth JSON Spec
+# Sereth JSON Tunnel
 
   ***Beta Version - Use at your own risk***
 
   **Requires Ruby 2.0**
 
-  Sereth JSON Spec is a ruby library based on the idea of treating data instances like
-  context sensitive API objects exported through JSON. 
+  Sereth JSON Tunnel is a ruby and coffeescript library used to establish a common data 
+  representation and communication layer between a ruby based server, and a `jquery + javascript` based web client.
 
-  The library may also be used to generate examples of blank data schemas to populate
-  scripts, and to export to web-based API editors.
-  
+  The core principle is to allow coffeescript to treat ruby data as language level objects.
+  Import and export control is provided by the system. Access and implenting logic and 
+  control are configured by the implementing system.
+
+  **Node:** While the library provides rails generators, it is not rails dependent.
+
 ## Content
 1. [Usage](#usage)
   - [Initialization](#initialization)
   - [Schemas](#schemas)
   - [Export](#export)
   - [Import](#import)
-2. [API Overview](#api-overview)
+2. [Ruby API Overview](#ruby-api-overview)
   - [Basic Nodes](#basic-nodes)
       * [Dynamic Export](#dynamic-export)
       * [Typed Export](#typed-export)
@@ -36,6 +39,7 @@
       * [Object Import](#object-import)
   - [Overrides](#overrides)
   - [Conditionals/Execution break-in](#conditionalsexecution-break-in)
+3. [CoffeeScript API Overview](#ruby-api-overview)
 
 ## Design Considerations
 
@@ -104,7 +108,7 @@ end
   a hard-coded path will overwrite other similarly named specs.
 
 ##
-## API Overview
+## Ruby API Overview
 ##
   Note, all values pass through `.to_json` unless otherwise noted
 ```ruby
