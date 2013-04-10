@@ -11,15 +11,14 @@
   Import and export control is provided by the system. Access and implenting logic and 
   control are configured by the implementing system.
 
-  **Node:** While the library provides rails generators, it is not rails dependent.
-
 ## Content
 1. [Usage](#usage)
   - [Initialization](#initialization)
   - [Schemas](#schemas)
   - [Export](#export)
   - [Import](#import)
-2. [Ruby API Overview](#ruby-api-overview)
+2. [API Overview](#ruby-api-overview)
+3. [Ruby Library]()
   - [Basic Nodes](#basic-nodes)
       * [Dynamic Export](#dynamic-export)
       * [Typed Export](#typed-export)
@@ -39,7 +38,15 @@
       * [Object Import](#object-import)
   - [Overrides](#overrides)
   - [Conditionals/Execution break-in](#conditionalsexecution-break-in)
-3. [CoffeeScript API Overview](#ruby-api-overview)
+3. [JavsScript Library](#ruby-api-overview)
+  - [Templates]()
+  - [Core Types]()
+      * [Context]()
+      * [Perspective]()
+      * [Object Sync]()
+      * [Object Render]()
+      * [URL Spec]()
+      * [Error]()
 
 ## Design Considerations
 
@@ -118,6 +125,8 @@ json_spec :spec_name do
   node_name #=> "node_name": #{inst.node_name}
   node_name :symbol #=> "node_name": #{inst.symbol)}
   node_name get: proc, set: proc {|value|} #=> "node_name": #{inst.instance_eval(&proc)}
+  node_name load_id: proc # inst = proc.call(input["node_name"]) for all setters
+                          # Maybe?
 
   # Typed Key-Value Nodes (Exception on invalid types)
   node_name type: Type, ... # Same operation as normal Key-Value nodes
@@ -232,6 +241,10 @@ end
 data_inst.to_json(spec: :basic_def) 
   #=> {"word": #{"hello".to_json}}
 ```
+
+### Import Target
+While data can be imported onto an existing object, it may sometimes be convenient to
+load the proper object as part of the import method. The spec system allows 
 
 ### Basic Import
 The spec system may also be used to update a data object based on an existing spec.
