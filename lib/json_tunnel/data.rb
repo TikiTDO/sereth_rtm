@@ -1,4 +1,4 @@
-module Sereth::JsonSpec
+module Sereth::JsonTunnel
   class Data
     # Spec Data Storage
     @specs = {}

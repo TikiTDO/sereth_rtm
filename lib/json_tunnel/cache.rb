@@ -1,5 +1,5 @@
 # Stub class for the JSON spec cache API. Can be extended to provide actual cache functionality
-module Sereth::JsonSpec
+module Sereth::JsonTunnel
   # TODO Override this cache with other types
   class Cache
     @cache = {}

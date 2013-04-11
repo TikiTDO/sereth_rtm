@@ -1,4 +1,4 @@
-module Sereth::JsonSpec
+module Sereth::JsonTunnel
   module ClassMethods
     # Generate the active path of this spec, for use with sub-specs
     def json_spec_path
@@ -23,14 +23,18 @@ module Sereth::JsonSpec
       Data.generate(json_spec_path, name, &block)
     end
   end
-
+  # System meant to operate on prepends
   def self.included(target)
-    raise "JsonSpec must be prepended."
+    raise "JsonTunnel must be prepended."
   end
 
   # Set up the default spec
   def self.prepended(target)
     target.send(:extend, ClassMethods)
+  end
+
+  # Helper to generate a tunneled error
+  def self.error(message, type = nil)
   end
 
   # Export item as JSON of a given spec. An invalid spec will generate

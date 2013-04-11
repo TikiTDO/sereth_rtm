@@ -1,4 +1,4 @@
-module Sereth::JsonSpec
+module Sereth::JsonTunnel
   # The runner is used to queue up the to_json call for use with as_json
   class RunnerUtil
     def initialize(path, name, inst)

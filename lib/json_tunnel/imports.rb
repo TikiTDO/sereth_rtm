@@ -1,4 +1,4 @@
-module Sereth::JsonSpec
+module Sereth::JsonTunnel
   class Imports
     class << self
       # Create a proc to execute the update operation given a update handler (setter)

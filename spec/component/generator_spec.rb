@@ -6,12 +6,12 @@ describe :generator do
   end
 
   it 'object initialization' do
-    expect{Sereth::JsonSpec::Generator.new('path', 'name', @mock_data)}.not_to raise_error
+    expect{Sereth::JsonTunnel::Generator.new('path', 'name', @mock_data)}.not_to raise_error
   end
 
   context 'after initialization' do
     before :each do
-      @gen = Sereth::JsonSpec::Generator.new('path', 'name', @mock_data)
+      @gen = Sereth::JsonTunnel::Generator.new('path', 'name', @mock_data)
     end
 
     it 'generates basic node' do
@@ -28,7 +28,7 @@ describe :generator do
 
     it 'generates object nodes' do
       subnode_mock_data = mock();
-      Sereth::JsonSpec::Data.expects(:new).once.returns(subnode_mock_data)
+      Sereth::JsonTunnel::Data.expects(:new).once.returns(subnode_mock_data)
 
       @mock_data.stubs(:command!).once.
         with(:test_node, false, subnode_mock_data, {:get => :test_node})
@@ -38,7 +38,7 @@ describe :generator do
 
     it 'generates object collection nodes' do
       subnode_mock_data = mock();
-      Sereth::JsonSpec::Data.expects(:new).once.returns(subnode_mock_data)
+      Sereth::JsonTunnel::Data.expects(:new).once.returns(subnode_mock_data)
 
       @mock_data.stubs(:command!).once.
         with(:test_node, true, subnode_mock_data, {:get => :test_node})

@@ -1,17 +1,13 @@
 source 'https://rubygems.org'
 
-gem 'rake'
-gem 'pry'
-gem 'andand'
-gem 'binding_of_caller'
-gem 'sourcify'
+gemspec
 
-# TODO: Fast Object to JSON encoder. Better performance than native JSON
-#gem 'yajl-ruby' 
+group :development do
+  gem 'pry'
+end
 
-gem 'json'
-
-## Testing
-gem 'spork'
-gem 'rspec'
-gem 'mocha', :require => false
+group :testing do
+  gem 'spork'
+  gem 'rspec'
+  gem 'mocha', :require => false
+end

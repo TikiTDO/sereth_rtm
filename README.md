@@ -11,6 +11,18 @@
   Import and export control is provided by the system. Access and implenting logic and 
   control are configured by the implementing system.
 
+## TODO
+Use async script loading for core elements
+
+```javascript
+function () {
+  var scr = document.createElemetn('script'); scr.type = 'text/javascript';
+  scr.async = true; src.src = 'http://blah';
+  var s = documetn.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(src, s);
+}
+```
+
 ## Content
 1. [Usage](#usage)
   - [Initialization](#initialization)
@@ -125,8 +137,6 @@ json_spec :spec_name do
   node_name #=> "node_name": #{inst.node_name}
   node_name :symbol #=> "node_name": #{inst.symbol)}
   node_name get: proc, set: proc {|value|} #=> "node_name": #{inst.instance_eval(&proc)}
-  node_name load_id: proc # inst = proc.call(input["node_name"]) for all setters
-                          # Maybe?
 
   # Typed Key-Value Nodes (Exception on invalid types)
   node_name type: Type, ... # Same operation as normal Key-Value nodes
@@ -156,9 +166,7 @@ json_spec :spec_name do
 end
 ```
 
-##
 ## Basic Nodes
-##
   Raw data nodes can be named within the json_spec block
 ```ruby
 # Definition
@@ -242,10 +250,6 @@ data_inst.to_json(spec: :basic_def)
   #=> {"word": #{"hello".to_json}}
 ```
 
-### Import Target
-While data can be imported onto an existing object, it may sometimes be convenient to
-load the proper object as part of the import method. The spec system allows 
-
 ### Basic Import
 The spec system may also be used to update a data object based on an existing spec.
 
@@ -300,9 +304,7 @@ data_inst.from_json({typed: "raw_data"}, spec: :basic_imp)
 #   data_inst.set_typed(Foo.from_json("raw_data"))
 ```
 
-##
 ## Collections
-##
   Collections must be denoted as such by speficying the Array data type after the node 
   name. 
 ```ruby
@@ -577,3 +579,23 @@ data_inst.to_json(spec: :cond)
   Redefining a node defined previously complete overrides it, even if done in the same 
   context. If complex node behaviour is required, please break it down into a proper
   series of extensions.
+
+
+##
+## JavsScript Library
+##
+
+The javascript library provides a browser level interface into the tunnel.
+
+## Context
+The context joins the communication and operational layers into one congruent system
+
+## Communication Layer
+### Object Sync
+### Object Render
+### URL Spec
+### Error
+
+## Operational Layer
+### Templates
+### Perspective

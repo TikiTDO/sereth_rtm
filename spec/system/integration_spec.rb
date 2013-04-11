@@ -14,7 +14,7 @@ describe 'json_spec operaion' do
       def set_data(*args) @parent ? @parent.set_data(*args) : @data = args; end
       def data; @data; end
 
-      prepend Sereth::JsonSpec
+      prepend Sereth::JsonTunnel
     end
     @target = @target_class.new
   end
@@ -231,7 +231,7 @@ describe 'json_spec operaion' do
         dne
       end
 
-      expect{@target.to_json(spec: :err_dne)}.to raise_error(Sereth::JsonSpec::ExportError)
+      expect{@target.to_json(spec: :err_dne)}.to raise_error(Sereth::JsonTunnel::ExportError)
     end
 
     it 'key triggers error' do
@@ -239,7 +239,7 @@ describe 'json_spec operaion' do
         err
       end
 
-      expect{@target.to_json(spec: :err_dne)}.to raise_error(Sereth::JsonSpec::ExportError)
+      expect{@target.to_json(spec: :err_dne)}.to raise_error(Sereth::JsonTunnel::ExportError)
     end
   end
 

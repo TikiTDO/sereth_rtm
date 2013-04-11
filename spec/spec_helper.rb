@@ -7,7 +7,7 @@ Spork.prefork do
 end
 
 Spork.each_run do
-  require 'sereth_json_spec'
+  require 'json_tunnel'
 end
 
 # RSpec Config

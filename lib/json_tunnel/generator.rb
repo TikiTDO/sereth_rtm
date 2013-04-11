@@ -1,4 +1,4 @@
-module Sereth::JsonSpec
+module Sereth::JsonTunnel
   class Generator
     # Remove all potentially unnecessary methods
     core_methods = %w(__id__ __send__ object_id instance_eval methods class nil? is_a?
@@ -14,7 +14,7 @@ module Sereth::JsonSpec
 
     ## Primary node creation mechanism
     private
-    # Generate a new JsonSpecData instance, and populates it with a
+    # Generate a new Data instance, and populates it with a
     def generate_subnode!(node_name = nil, &block)
       # Generate and populate sub-node 
       new_name = "#{@name}/#{node_name}" if !node_name.nil?

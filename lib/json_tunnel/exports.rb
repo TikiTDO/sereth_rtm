@@ -1,4 +1,4 @@
-module Sereth::JsonSpec
+module Sereth::JsonTunnel
   # Code generator to create functions that will extract an attribute from an object
   class Exports
     class << self
