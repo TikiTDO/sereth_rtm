@@ -37,6 +37,24 @@ module Sereth::JsonTunnel
   def self.error(message, type = nil)
   end
 
+  # Helper for properly rendering a specced instance, or collection of instances
+  def to_json_from(data, *args)
+    if data.responds_to? :each and not data.responds_to? :to_json_from
+      ret = '{'
+      ph = ''
+      # Render a collection, unless collection is a speced item
+      data.each do |inst| 
+        ret << inst.to_json(*args) << ph
+        ph = ',' if ph == ''
+      end
+      ret << '}'
+      return ret
+    else
+      # Render any properly specced item
+      return inst.to_json(*args)
+    end
+  end
+
   # Export item as JSON of a given spec. An invalid spec will generate
   # an exception. Will optionally extra-escape data for inclusion in initial template.
   def to_json(_ = {}, spec: nil, escape: false)

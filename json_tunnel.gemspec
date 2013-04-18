@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
 
   # TODO: Fast Object to JSON encoder. Better performance than native JSON
   #gem 'yajl-ruby' 
-
-  s.files       = `git ls-files -- lib/*`.split("\n")
+  s.files       = `git ls-files -- {lib,app}/*`.split("\n")
   s.test_files  = `git ls-files -- spec/*`.split("\n")
 end
