@@ -15,3 +15,5 @@ class sereth.tunnel.list
     return 0
 
   page: (number, callback = null) ->
+    if !@pages[number]?
+      @_load

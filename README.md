@@ -167,7 +167,7 @@ script_tag = Data.json_tunnel(:spec_name, @default_inst)
 
 ```coffee
   # Generate a inst spec
-  sereth.tunnel.register("Data", "spec_name", schema, initial_data)
+  sereth.tunnel.register_spec("Data", "spec_name", schema, initial_data)
 ```
 
 ### Generating Tunnel
@@ -179,9 +179,9 @@ script_tag = Data.json_tunnel(:spec_name, @default_inst)
   
   # Note: Page sizing determined by server.
   # Query a list of instances, and return a given spec name. Defaults to page 1.
-  list_tunnel = sereth.tunnel.get_list("spec_name"[, page = null], params = {})
+  list_tunnel = sereth.tunnel.get_list("spec_name", params = {}, page = null)
   # Specify a class for the list instead of using script's default. Defaults to page 1.
-  list_tunnel = sereth.tunnel.get_list("Data", "spec_name"[, page = null], params = {})
+  list_tunnel = sereth.tunnel.get_list("Data", "spec_name", params = {}, page = null)
 ```
 
 ### General Tunnel Info

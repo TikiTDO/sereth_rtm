@@ -1,6 +1,8 @@
 class sereth.tunnel.spec
   @data: []
-  @register: (object, spec, args...) ->
-    @data[[object, spec]] = new sereth.tunnel.spec(object, spec, args...)
 
-  constructor: (@object, @spec, @schema, @initial = null) ->
+  @get: (data_type, spec_name) ->
+    @data[[data_type, spec_name]]
+
+  constructor: (@data_type, @spec_name, @schema, @initial = null) ->
+    sereth.tunnel.spec.data[[@data_type, @spec_name]] = this
