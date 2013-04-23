@@ -1,12 +1,12 @@
-version_file = 'lib/json_tunnel/version.rb'
-require_relative 'lib/json_tunnel/version'
+$:.unshift File.expand_path("../lib", __FILE__)
+require 'json_tunnel/version'
 
 Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.0.0"
 
   s.name        = 'json_tunnel'
   s.version     = "#{Sereth::JsonTunnel::VERSION}"
-  s.date        = File.utime(version_file)
+  s.date        = Time.now
   s.summary     = "Sereth JSON Specification gem"
   s.description = "A gem to generate JSON schema and output from object instances"
   s.authors     = ["Tikhon Botchkarev"]
