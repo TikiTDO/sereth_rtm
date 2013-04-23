@@ -40,6 +40,7 @@ module Sereth::JsonTunnel
   # Helper for properly rendering a specced instance, or collection of instances
   def to_json_from(data, *args)
     if data.responds_to? :each and not data.responds_to? :to_json_from
+      # Ensure we don't render tunnelled data that also happens to define each
       ret = '{'
       ph = ''
       # Render a collection, unless collection is a speced item
@@ -57,9 +58,17 @@ module Sereth::JsonTunnel
 
   # Export item as JSON of a given spec. An invalid spec will generate
   # an exception. Will optionally extra-escape data for inclusion in initial template.
-  def to_json(_ = {}, spec: nil, escape: false)
+  def to_json(_ = {}, spec: nil, escape: false, wrapper: false)
     if spec
+      # Get a string containing the JSON data
       ret = Data.export(self.class.json_spec_path, spec, self)
+
+      # Wrap the resulting JSON for message passing
+      if wrapper && wrapper.responds_to?(:wrap)
+        ret = wrapper.wrap(ret)
+      end
+
+      # Escape key characters when rendering directly into javascript
       if escape
         ret = ret.to_json
         ret = ret.html_safe if ret.responds_to?(:html_safe)
@@ -72,18 +81,18 @@ module Sereth::JsonTunnel
 
   # Wraps the proper to_json call for use with rails render method
   def as_json(options = {})
-    if options.has_key?(:spec)
-      RunnerUtil.new(self.class.json_spec_path, options[:spec], self)
+    if options[:spec]
+      RunnerUtil.new(self, options)
     else
       super
     end
   end
 
   # Perform the import operation
-  def from_json(data, options)
+  def from_json(data, _ = {} , spec: nil)
     data = JSON.parse(data) if data.is_a?(String)
-    if options.has_key?(:spec)
-      Data.import(self.class.json_spec_path, options[:spec], self, data)
+    if spec
+      Data.import(self.class.json_spec_path, spec, self, data)
     elsif defined?(super)
       super
     end

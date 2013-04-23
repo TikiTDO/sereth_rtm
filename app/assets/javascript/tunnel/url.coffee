@@ -1,4 +1,4 @@
-class sereth.tunnel.path
+class sereth.tunnel.url
   # Populates basic request info
   constructor: (@object, @spec, @namespace = null) ->
     @protocol = window.location.protocol

@@ -1,9 +1,12 @@
+version_file = 'lib/json_tunnel/version.rb'
+require_relative 'lib/json_tunnel/version'
+
 Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.0.0"
 
   s.name        = 'json_tunnel'
-  s.version     = '1.0beta2'
-  s.date        = '2013-02-03'
+  s.version     = "#{Sereth::JsonTunnel::VERSION}"
+  s.date        = File.utime(version_file)
   s.summary     = "Sereth JSON Specification gem"
   s.description = "A gem to generate JSON schema and output from object instances"
   s.authors     = ["Tikhon Botchkarev"]
@@ -18,6 +21,8 @@ Gem::Specification.new do |s|
   s.add_dependency('binding_of_caller')
   s.add_dependency('sourcify')
   s.add_dependency('json')
+  s.add_dependency('sprockets')
+  s.add_dependency('coffee-script')
 
   # TODO: Fast Object to JSON encoder. Better performance than native JSON
   #gem 'yajl-ruby' 

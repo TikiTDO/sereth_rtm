@@ -2,12 +2,16 @@ source 'https://rubygems.org'
 
 gemspec
 
-group :development do
+group :development, :test do
   gem 'pry'
-end
 
-group :testing do
+  # Ruby Testing
   gem 'spork'
   gem 'rspec'
   gem 'mocha', :require => false
+
+  # JS Testing
+  gem 'sprockets'
+  gem 'coffee-script'
+  gem 'jasminerice'
 end
