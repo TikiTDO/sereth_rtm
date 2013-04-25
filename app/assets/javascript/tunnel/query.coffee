@@ -1,9 +1,30 @@
-class sereth.tunnel.query
-  @send: (path, data, populate) ->
-    delegate = $.ajax(path, data)
+# Configure interface - Should accept a URL, data, and method. Will always return a 
+# JSON object. 
+#
+# Should delegate to framework implementer. Default implementer is jQuery
+#
+# Data should be send to context promise waiter
 
-    delegate.error(@error)
-    delegate.success () ->
+
+a = new query
+wait = a.send(path, data, populate)
+wait.done () ->
+wait.error () ->
+
+class sereth.tunnel.query
+  @provider = {
+    _: class # Template for providers
+      init: () -> # 
+      prepare: (url, data, method) ->
+    jQuery: class
+
+  }
+
+  @send: (path, data, populate) ->
+    defer = $.ajax(path, data)
+
+    defer.error(@error)
+    defer.success () ->
     # Block until done
 
   @error: (response = nil) ->

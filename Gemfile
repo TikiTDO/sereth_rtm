@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
+  # Debugger
   gem 'pry'
 
   # Ruby Testing
@@ -12,6 +13,7 @@ group :development, :test do
 
   # JS Testing
   gem 'sprockets'
+  gem 'execjs'
   gem 'coffee-script'
-  gem 'jasminerice'
+  gem 'jasmine'
 end
