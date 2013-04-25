@@ -22,7 +22,7 @@ Jasmine.configure do |config|
   end
   # Watch the spec script directory
   Thread.new do
-    FileWatcher.new(*inst_sprockets.paths.to_a).watch do |filename|
+    FileWatcher.new(*spec_sprockets.paths.to_a).watch do |filename|
       spec_sprockets['spec.js'].write_to(File.join(config.spec_dir, 'spec.js'))
     end
   end
