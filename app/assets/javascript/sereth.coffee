@@ -1,14 +1,16 @@
 #= require_self
-
-#= require_tree sereth/
+#
+# 
+#= require core/context
+#= require core/
 #
 # Note: Order Matters
-#= require tunnel/context.coffee
-#= require tunnel/error.coffee
-#= require tunnel/perspective.coffee
-#= require tunnel/render.coffee
-#= require tunnel/sync.coffee
-#= require tunnel/template.coffee
-#= require tunnel/url.coffee
+#= require tunnel/context
+#= require tunnel/error
+#= require tunnel/perspective
+#= require tunnel/render
+#= require tunnel/sync
+#= require tunnel/template
+#= require tunnel/url
 
 window.sereth = {}

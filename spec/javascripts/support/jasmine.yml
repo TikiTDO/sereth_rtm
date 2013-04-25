@@ -1,7 +1,7 @@
 # Code to test
 src_dir: public/javascripts/compiled
 src_files:
-    - '*.js'
+    - '**/*.js'
 
 # Spec Locations
 spec_dir: spec/javascripts/compiled

@@ -1,2 +1,3 @@
-() ->
-  console.log('hi')
+class window.AA
+  foo: () ->
+    5 

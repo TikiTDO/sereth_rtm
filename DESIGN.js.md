@@ -46,6 +46,8 @@ Usage:
     From your contextual position you can see multiple contexts. If you've created a context
     but did not define a link type for it, the future link searches will query super-cts links
 
+    Context need follow linkage
+
     Admin Environment
       Initiate root Worker Context W1
       Renders admin header
@@ -68,3 +70,5 @@ Usage:
         Leave content context C3
           Should return to (C2 D1 R1)
           Should notify D1 to reload due to D1*
+
+    

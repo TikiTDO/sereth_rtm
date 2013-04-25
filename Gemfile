@@ -11,6 +11,12 @@ group :development, :test do
   gem 'rspec'
   gem 'mocha', :require => false
 
+  # JS Change Detection 
+  gem 'filewatcher'
+  gem 'rb-inotify', :require => false
+  gem 'rb-fsevent', :require => false
+  gem 'rb-fchange', :require => false
+
   # JS Testing
   gem 'sprockets'
   gem 'execjs'

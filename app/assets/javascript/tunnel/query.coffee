@@ -3,7 +3,8 @@
 #
 # Should delegate to framework implementer. Default implementer is jQuery
 #
-# Data should be send to context promise waiter
+# Data should be send to context promise waiter. Usually the data object
+# Data object may itself subclass into list and inst
 
 
 a = new query
