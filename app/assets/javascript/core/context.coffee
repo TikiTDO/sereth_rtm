@@ -6,8 +6,10 @@
 # Node -> link to Nodes under different titles
 # Data Query - Child to parent
 
+# Will inject __defineGetters__ into the global 
+
 $ () ->
-  window.current_context = new sereth.context
+  global.context = new sereth.context
 
   # Enable context based logging
   console.debug = (args...) ->
@@ -21,6 +23,13 @@ class sereth.context
   @__univeral_entry_callbacks: []
   @__univeral_exit_callbacks: []
   @__depth: 0
+
+  register_type: (ctx_type) ->
+    global.__defineGetter__ ctx_type, () ->
+      # Query the context for this type
+
+  # Instantiate a new worker, and populate it with a properly related context
+  spawn_worker: () ->
 
   constructor: (name = null, parent = null) ->
     @fresh = true

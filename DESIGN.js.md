@@ -71,4 +71,29 @@ Usage:
           Should return to (C2 D1 R1)
           Should notify D1 to reload due to D1*
 
-    
+Query contexts 
+
+  Default access to worker context
+    window.context
+
+  Access to object's context
+    this.context
+
+  context.name -- Get the [name] type bound to the worker
+    context or {}.context 
+
+  generate_context(object, type) OR (object, ctx_parent)
+  local_context.name --
+
+
+
+
+Object.__proto__.test = function () {console.log('1')};
+a = function () {
+  this.test = function () {console.log('2')};
+}
+
+a.prototype.woo = function () {test()};
+
+aa = new a();
+aa.woo();

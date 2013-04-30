@@ -44,12 +44,12 @@ class sereth.tunnel.inst
     
     
   set: (path, value) ->
-    if @_is_settable(path)
+    
 
 class sereth.tunnel.list
   constructor: (@path) ->
     @instances = {}
-    @info = {page_size = null, inst_count = null}
+    @info = {page_size: null, inst_count: null}
     @pages = {}
 
   find: (id) ->
