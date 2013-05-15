@@ -16,13 +16,17 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "bundler", ">= 1.0.0"
 
+  # Ruby Component
   s.add_dependency('rake')
   s.add_dependency('andand')
   s.add_dependency('binding_of_caller')
   s.add_dependency('sourcify')
   s.add_dependency('json')
-  s.add_dependency('sprockets')
+
+  # JS Component
+  s.add_dependency('requirejs-rails')
   s.add_dependency('coffee-script')
+
 
   # TODO: Fast Object to JSON encoder. Better performance than native JSON
   #gem 'yajl-ruby' 

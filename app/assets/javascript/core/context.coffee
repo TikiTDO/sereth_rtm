@@ -1,3 +1,11 @@
+
+class sereth.context
+
+
+  defineType: () ->
+
+
+
 ## THIS IS A TREE
 ## WOW
 ##  -90dfzgkloh gd
@@ -7,6 +15,13 @@
 # Data Query - Child to parent
 
 # Will inject __defineGetters__ into the global 
+
+# .get method for 
+
+# Inject directly into controller, and get path from there. Query routes if anything
+# References
+
+
 
 $ () ->
   global.context = new sereth.context

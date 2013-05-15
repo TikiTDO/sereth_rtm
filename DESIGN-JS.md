@@ -1,3 +1,75 @@
+### Contexts
+
+  Context provide generaized control for global variables which provide a backing
+  for the current thread of execution.
+
+  - Initializing
+
+```coffee
+  sereth.context.bind(type, object)
+  sereth.context.bind(type, () ->)
+
+
+  context.register_type(type_name, () -> ret_1)
+  context.global_type(global_name, () -> ret_2)
+
+  context.link_type(context_node)
+
+  context.get_data(data, value_1)
+  context.global_data(g_data, value_2)
+
+  context.enter(name, () -> populate)
+  # If name does not exist, then run the populate
+  # Enter name and run the entry handlers
+
+  context.leave()
+  # Remove global data defined in the current context, and repopulate parent entry
+
+
+  # Then
+  # Note, globals can be retrieved with get_* too
+  context.get_type(type_name) #=> ret_1
+  global_type #=> ret_2
+
+  context.get_data(data) #=> value_1
+  g_data #=> value_2
+
+
+```
+
+  - Using
+
+  Contextual data exists 
+
+```coffee
+  # in render
+  inst.get('name')
+
+  $(".name_#{item.id}").value = item.name for item in list
+
+```
+Page
+  Header
+    Logo (static)
+    Search (signaled inst) link go (video dynamic list)
+  Options
+    Nav Options (static list)
+    Subscriptions (static list)
+  Content = Video List (video dynamic list)
+    Filters (signaled inst bound to lists)
+    Videos 
+    Pages
+  Footer (static)
+
+
+Page - Root Context
+  
+
+Page
+  Header
+
+
+
 Tunnel
   Define Spec (What JSON looks like, object name, spec name, server url)
   Instantiate first request
