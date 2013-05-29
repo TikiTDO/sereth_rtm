@@ -1,0 +1,5 @@
+assets_path "assets/javascript"
+
+group :vendor do
+  js 'jquery'
+end

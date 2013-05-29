@@ -1,10 +1,13 @@
 source 'https://rubygems.org'
 
 gemspec
+gem 'rkelly_for_reef'
+gem 'nokogiri'
 
 group :development, :test do
   # Debugger
   gem 'pry'
+  gem 'pry-debugger'
 
   # Ruby Testing
   gem 'spork'
@@ -17,9 +20,13 @@ group :development, :test do
   gem 'rb-fsevent', :require => false
   gem 'rb-fchange', :require => false
 
+  gem 'bower-rails', :git => 'git@github.com:TikiTDO/bower-rails'
+  
   # JS Testing
   gem 'sprockets'
+  gem 'tilt'
   gem 'execjs'
   gem 'coffee-script'
   gem 'jasmine'
+  gem 'slim'
 end

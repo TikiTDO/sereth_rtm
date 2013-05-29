@@ -18,3 +18,9 @@ rescue LoadError
     abort "Jasmine is not available. In order to run jasmine, you must: (sudo) gem install jasmine"
   end
 end
+
+begin
+  require 'bower-rails'
+  load 'tasks/bower.rake'
+rescue LoadError
+end

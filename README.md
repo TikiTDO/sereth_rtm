@@ -1,6 +1,6 @@
 # Sereth JSON Tunnel
 
-  ***Beta Version - Use at your own risk***
+  UNDER DEVELOPMENT - DO NOT USE
 
   **Requires Ruby 2.0**
 

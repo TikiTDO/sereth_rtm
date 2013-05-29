@@ -1,0 +1,7 @@
+coffee:
+  init () ->
+    thing
+  enter () ->
+    thing_render
+  exit () ->
+    thing_exit

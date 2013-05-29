@@ -24,7 +24,9 @@ Gem::Specification.new do |s|
   s.add_dependency('json')
 
   # JS Component
-  s.add_dependency('requirejs-rails')
+  #s.add_dependency('bower-rails')
+  s.add_dependency('rkelly_for_reef')
+  s.add_dependency('uglifier')
   s.add_dependency('coffee-script')
 
 

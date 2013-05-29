@@ -1,3 +1,37 @@
+Page Loads
+  Basic CSS
+  Initialize JS Queue
+  Basic HTML
+  Initializer JS
+    Query into page config
+    Page config sets data+source
+    Page config queries into templates
+      Template comtext injected into execution context
+      Execution follows template context execution path to end
+
+Execution Path Example
+  Root Page -> Load requsted template-set
+    Admin Page -> Get Current Tab Info from Context, regiser hotkey handler
+Load: User Perspective -> Get user data from Context
+Load:   User List Template
+          * Render individual users -> Populate user callbacks
+
+
+
+Root Page (Header/Body/Footer)
+  Top Bar (Logo/Search/Login)
+
+
+
+### Templates
+Need a single view file per controller. All template selection happens in JS.
+
+```slim
+  coffee:
+
+  .asdf
+```
+
 ### Contexts
 
   Context provide generaized control for global variables which provide a backing

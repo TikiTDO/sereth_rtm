@@ -1,0 +1,1 @@
+Sprockets.register_engine '.rtm', Sereth::TunnelTemplate

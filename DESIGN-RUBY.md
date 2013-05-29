@@ -1,4 +1,7 @@
 # Sereth JSON Spec Code Layout
+Full on registration with Rails subsystems.
+  Asset compilation injection
+
 
 * lib/sereth_utils
 
@@ -52,3 +55,11 @@
 
       Helper classes used to generate proc objects used by JsonSpecData to perform operations
       on class instances.
+
+# Template Manager
+Tarses rtm (Ruby Template Manger) files in order to create javascript 
+
+Need a template generator+storage ending
+  Bind route to query templates
+  Permission/namespace based security
+  Cached results for common pages
