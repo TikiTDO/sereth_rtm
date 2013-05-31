@@ -1,6 +1,13 @@
 require 'bundler/setup'
 Bundler.require(:default, :development)
 
+module Sereth
+  class Context
+    class << self
+      attr_reader :data
+    end
+  end
+end
 
 # Sereth Libraries
 require_relative 'sereth_utils/all'
@@ -26,7 +33,7 @@ end
 
 
 spr = Sprockets::Environment.new
-spr.append_path '../app/assets/javascript'
+spr.append_path Bundler.root + 'app/templates/compiled'
 binding.pry
 # TODO - Run any necessary stages
 # Binding.run_stage(:sereth_util_loaded)

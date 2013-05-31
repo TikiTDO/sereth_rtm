@@ -29,4 +29,5 @@ group :development, :test do
   gem 'coffee-script'
   gem 'jasmine'
   gem 'slim'
+  gem 'slim_assets'
 end

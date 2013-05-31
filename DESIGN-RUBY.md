@@ -19,7 +19,7 @@ Full on registration with Rails subsystems.
 
       Calls out to JsonSpecGenerator in order to create a new spec.
 
-      Calls out to JosnSpecData in order to utilize existing specs.
+      Calls out to JsonSpecData in order to utilize existing specs.
 
   - **generator.rb**
 
@@ -63,3 +63,6 @@ Need a template generator+storage ending
   Bind route to query templates
   Permission/namespace based security
   Cached results for common pages
+
+# TODO
+Verify bower deps, run compile operations, and copy into required locations

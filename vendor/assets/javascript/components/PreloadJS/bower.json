@@ -1,0 +1,9 @@
+{
+  "name": "PreloadJS",
+  "version": "0.0.0",
+  "commit": "17b6bbd5ba9c5b32be9ec6f77c9005e0a0b13b38",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/CreateJS/PreloadJS.git"
+  }
+}
