@@ -1,7 +1,7 @@
 # Represents the HTML and JS Code
 class Sereth::TunnelTemplate::DataModel
   @baseline = <<-js_code
-    sereth.render.inject("%{path}", function (ctx) {
+    sereth.render.register("%{path}", function (ctx) {
         ctx.load([%{load}]);
         ctx.gate([%{gate}]);
         ctx.template(%{template});

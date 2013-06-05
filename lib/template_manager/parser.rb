@@ -1,5 +1,5 @@
 # Provides JS parsing and generation interface
-class Sereth::TunnelTemplate::Parser
+class Sereth::TemplateManager::Parser
   @parser = RKelly::Parser.new
   @baseline = <<-js_code
     sereth.render.inject("render_path", function (ctx) {
