@@ -22,6 +22,9 @@ Inline Partials!
 Root Page (Header/Body/Footer)
   Top Bar (Logo/Search/Login)
 
+### Manifests
+Read app/templates/raw/*
+
 
 ### Templates
 Need a single view file per controller. All template selection happens in JS.

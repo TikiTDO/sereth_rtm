@@ -1,3 +1,4 @@
+# The Template Manager API meant for external interface
 class Sereth::TemplateManager
   attr_accessor :access
 

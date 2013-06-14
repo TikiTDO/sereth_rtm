@@ -1,5 +1,5 @@
-# Represents the HTML and JS Code
-class Sereth::TunnelTemplate::DataModel
+# Data object for the parser. Can be generated for a manifest entry, or query existing files.
+class Sereth::TemplateManager::Template
   @baseline = <<-js_code
     sereth.render.register("%{path}", function (ctx) {
         ctx.load([%{load}]);
@@ -15,9 +15,14 @@ class Sereth::TunnelTemplate::DataModel
   end
 
   attr_reader :metadata
-  def initialize(super_node)
+  def initialize(super_node = nil)
+    # System Data
+    @raw = nil
+    @parsed = nil
+    @plugins = []
+
     # Core template data
-    @metadata = {}
+    @config = {}
     @load = []
     @gate = []
     @template = nil

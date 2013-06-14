@@ -1,4 +1,4 @@
-# Provides JS parsing and generation interface
+# Parses rtm files in order to generate the code to inject the template into the js env
 class Sereth::TemplateManager::Parser
   @parser = RKelly::Parser.new
   @baseline = <<-js_code

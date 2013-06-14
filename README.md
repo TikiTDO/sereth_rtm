@@ -27,6 +27,31 @@ function () {
 
 Remote spec type - Format
 
+Include tattletale for console debugging
+
+GitHub Integrator?
+
+## Installation
+
+For the purpose of this example we will be using a new rails project. Skip the
+generation step if using with an existing rails proejct.
+
+```bash
+ $ rails new rtm_demo
+```
+
+Add the json_rtm gem to the Gemfile.
+
+```
+Gemfile << gem 'rtm-json'
+$ bundle install
+```
+
+Run rake task to generate the template structure
+```
+$ rake rtm:new
+```
+
 
 ## Content
 1. [Usage](#usage)

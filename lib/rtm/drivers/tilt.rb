@@ -1,12 +1,5 @@
 module Sereth
   class TunnelTemplate < Tilt::Template
-    # Dependencies
-    autoload :Nokogiri, 'nokogiri'
-
-    # Library Classes
-    autoload :DataModel, 'template_manager/data_model'
-    autoload :TemplateGenerator, 'template_manager/template_generator'
-
     # Combine Slim + Coffee/Javascript
     self.default_mime_type = 'application/javascript'
 

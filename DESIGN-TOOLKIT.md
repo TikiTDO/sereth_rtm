@@ -61,6 +61,15 @@ Views are in a path context
 
 Distribution: Ruby Gem
 
+TemplateManager
+  Parser fills Template
+    Also calls pre-configured callouts based on raw handlers
+  Manifest stores Template Metadata
+  Template points to Raw + Cached + Meta/Callbacks
+
+
+
+
 
 ## Ruby
   Library Manager: Gem + Bundler
