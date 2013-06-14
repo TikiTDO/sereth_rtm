@@ -1,1 +1,0 @@
-{"hello": "BasicType", "bye": "BasicType", "str": "String", "num": "Integer", "mis_str": "String", "arr": ["BasicType"], "rarr": ["BasicType"], "typed_arr": ["Integer"], "foo": {"id": "BasicType"}, "bar": [{"id": "BasicType"}], "zzz": {"id": "BasicType"}, "else": "BasicType", "should_not_happen": "ConditionalBasicType", "should_happen": "ConditionalBasicType"}
