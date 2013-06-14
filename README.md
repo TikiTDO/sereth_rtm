@@ -1,5 +1,7 @@
 # Sereth JSON Tunnel
 
+**For Developers:** Please consult the design notes available in the [wiki](https://github.com/TikiTDO/json_tunnel/wiki) before reading or extending.
+
   UNDER DEVELOPMENT - DO NOT USE
 
   **Requires Ruby 2.0**
