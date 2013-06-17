@@ -2,6 +2,7 @@
 module Sereth::TemplateManager
   class CoreParserPlugin < ParserPlugin
     # Load
+    
     # Gate
     # Template
     # Config
