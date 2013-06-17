@@ -1,13 +1,13 @@
-# Sereth JSON Tunnel
+# Sereth Ruby Template Manager
 
   UNDER DEVELOPMENT - DO NOT USE
 
   **Requires Ruby 2.0**
   
   **For Developers:** Please consult the design notes available in the [wiki](https://github.com/TikiTDO/json_tunnel/wiki) 
-  before reading or extending.
+  before reading or extending the code.
 
-  Sereth JSON Tunnel is a ruby and coffeescript library used to establish a common data 
+  Sereth RTM is a ruby and coffeescript library used to establish a common data 
   representation and communication layer between a ruby based server, and a `jquery + javascript` based web client.
 
   The core principle is to allow coffeescript to treat ruby data as language level objects.
