@@ -12,3 +12,8 @@ class Sereth::TemplateManager
 
   end
 end
+
+# Manifest - Stores Templates. Batch templates operations.
+# Template - Stores Template Instances
+# Parser - Generates Templates
+# Generator? - Creates parsed template code

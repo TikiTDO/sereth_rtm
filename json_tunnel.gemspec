@@ -1,17 +1,18 @@
 $:.unshift File.expand_path("../lib", __FILE__)
-require 'json_tunnel/version'
+require 'rtm/version'
 
 Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.0.0"
 
-  s.name        = 'json_tunnel'
-  s.version     = "#{Sereth::JsonTunnel::VERSION}"
+  s.name        = 'sereth_rtm'
+  s.version     = "#{Sereth::RTM::VERSION}"
   s.date        = Time.now
-  s.summary     = "Sereth JSON Specification gem"
-  s.description = "A gem to generate JSON schema and output from object instances"
+  s.summary     = "Ruby <=> HTML5 development framework"
+  s.description = "A gem to manage communication between Ruby based server and" +
+    "HTML5 based clients."
   s.authors     = ["Tikhon Botchkarev"]
   s.email       = 'TikiTDO@gmail.com'
-  s.homepage    = 'https://github.com/TikiTDO/sereth_json_spec'
+  s.homepage    = 'https://github.com/TikiTDO/sereth_rtm'
   s.license     = "MIT"
 
   s.add_development_dependency "bundler", ">= 1.0.0"
