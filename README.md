@@ -34,6 +34,8 @@ Include tattletale for console debugging
 
 GitHub Integrator?
 
+Stream results directly. Prolly not, seems slower unless rails4 improves it
+
 ## Installation
 
 For the purpose of this example we will be using a new rails project. Skip the

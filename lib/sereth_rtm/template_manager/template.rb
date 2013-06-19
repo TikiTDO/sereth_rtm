@@ -1,3 +1,16 @@
+class Sereth::TemplateManager::Template
+  attr_accessor :path, :name
+
+  def add_data(name, value)
+    
+  end
+
+  def add_js(name, js_code)
+
+  end
+end
+
+
 # Data object for the parser. Can be generated for a manifest entry, or query existing files.
 class Sereth::TemplateManager::Template
   @baseline = <<-js_code

@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.name        = 'sereth_rtm'
   s.version     = "#{Sereth::RTM::VERSION}"
   s.date        = Time.now
-  s.summary     = "Ruby <=> HTML5 development framework"
+  s.summary     = "Ruby <=> HTML5 development interface"
   s.description = "A gem to manage communication between Ruby based server and" +
     "HTML5 based clients."
   s.authors     = ["Tikhon Botchkarev"]
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency('binding_of_caller')
   s.add_dependency('sourcify')
   s.add_dependency('json')
+  s.add_dependency('hike')
 
   # JS Component
   #s.add_dependency('bower-rails')

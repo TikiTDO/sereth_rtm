@@ -6,6 +6,34 @@
 #   Same with config?
 #   Inject into main sprockets manifest
 module Sereth
+  class RTMRailtie < ::Rails::Railtie
+    initializer 'sereth.initialize_rtm' do |rails_inst|
+      
+    end
+
+    initializer 'sereth.after_rtm', after: 'sereth.initialize_rtm' do |rails_inst|
+      # For plugins that want to live in RTM
+    end
+
+    # Load the rails rake tasks
+    rake_tasks do
+      tasks_path = Pathname.new(__dir__).join('tasks')
+      tasks_path.each_entry do |entry|
+        next if !entry.file?
+        load entry
+      end
+    end
+
+    # Load the rails generators
+    generators do
+      gen_path = Pathname.new(__dir__).join('tasks')
+      gen_path.each_entry do |entry|
+        next if !entry.file?
+        require_relative entry
+      end
+    end
+  end
+
   # Read configuration file
   config = YML.parse('rtm.yml')
 
