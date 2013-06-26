@@ -12,13 +12,13 @@ JavaScript templates, allow web clients to use these templates in order to rende
 for these web clients to keep this data syncronized with the server when authorized to do so.
 
 **For Web Developers:** Please consult the usage guides for:
-* [Ruby &harr; JS Interface](docs/usage.json-tunnel.md)
-* [JS Templatesl](docs/usage.json-template.md)
+* [Ruby &harr; JS Interface](docs/usage.tunnel.md)
+* [JS Templatesl](docs/usage.template.md)
 * [Rails Integration](docs/usage.rails.md)
 
 **For Ruby Developers:** Please consult the design notes for:
-* [Ruby &harr; JS Interface](docs/design.json-tunnel.md)
-* [JS Templates](docs/design.json-template.md)
+* [Ruby &harr; JS Interface](docs/design.tunnel.md)
+* [JS Templates](docs/design.template.md)
 * [Rails Integration](docs/design.rails.md)
 
 ## TODO
