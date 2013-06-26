@@ -1,23 +1,25 @@
 # Sereth Ruby Template Manager
 
-  UNDER DEVELOPMENT - DO NOT USE
+UNDER DEVELOPMENT - DO NOT USE
 
-  **Requires Ruby 2.0**
-  
-  **For Web Developers:** Please consult the usage guides for:
-  * []
+**Requires Ruby 2.0**
 
-  **For Ruby Developers:** Please consult the design notes available in the [wiki](https://github.com/TikiTDO/json_tunnel/wiki) 
-  before reading or extending the code.
+Sereth RTM is a Ruby and CoffeeScript library developed to establish a common data representation and communication 
+layer between a Ruby based server, and a JavaScript based web client.
 
-  Sereth RTM is a ruby and coffeescript library used to establish a common data 
-  representation and communication layer between a ruby based server, and a `jquery + javascript` based web client.
+The core goals of this project are to facilitate the export of fine-grained ruby objects into highly-dynamic
+JavaScript templates, allow web clients to use these templates in order to render a web page, and to facilitate a mechanism for remote clients to track and update server based data when
+for these web clients to keep this data syncronized with the server when authorized to do so.
 
-  The core principle is to allow coffeescript to treat ruby data as language level objects.
-  Import and export control is provided by the system. Access and implenting logic and 
-  control are configured by the implementing system.
+**For Web Developers:** Please consult the usage guides for:
+* [Ruby &harr; JS Interface](docs/usage.json-tunnel.md)
+* [JS Templatesl](docs/usage.json-template.md)
+* [Rails Integration](docs/usage.rails.md)
 
-  Please be aware, all client side are documented in CoffeeScript. 
+**For Ruby Developers:** Please consult the design notes for:
+* [Ruby &harr; JS Interface](docs/design.json-tunnel.md)
+* [JS Templates](docs/design.json-template.md)
+* [Rails Integration](docs/design.rails.md)
 
 ## TODO
 Use async script loading for core elements
