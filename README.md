@@ -4,7 +4,10 @@
 
   **Requires Ruby 2.0**
   
-  **For Developers:** Please consult the design notes available in the [wiki](https://github.com/TikiTDO/json_tunnel/wiki) 
+  **For Web Developers:** Please consult the usage guides for:
+  * []
+
+  **For Ruby Developers:** Please consult the design notes available in the [wiki](https://github.com/TikiTDO/json_tunnel/wiki) 
   before reading or extending the code.
 
   Sereth RTM is a ruby and coffeescript library used to establish a common data 

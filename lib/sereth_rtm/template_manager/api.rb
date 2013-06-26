@@ -10,11 +10,15 @@ class Sereth::TemplateManager
   end
 
   def initialize(mode = :development)
+    @mode = mode
+    @sprockets = Context.get(:sprockets)
     case mode
     when :development
       # Development Mode :: Query Manifest + Recompile each request
     when :production
       # Production Mode :: Query Manifest Only
+    else
+      raise "Invalid Mode"
     end    
   end
 
@@ -27,30 +31,17 @@ class Sereth::TemplateManager
     @cached_path = @path.join('cached')
 
     # Load the manifest if it exists
-    @manifest = Manifest::DSL.load(@manifest_path) if @manifest.exist?
-    
-
-    # Configure Raw locations
-  end
-
-  # Read the directory, and compile it
-  def parse(directory)
-    # Sprockets initialization
+    @manifest = Manifest.load(@manifest_path) if @manifest.exist?
   end
 
   # Get js code representing the template
   def get_template(path)
-    # Query the sprockets system
-  end
-
-  # Get data out of the manifest
-  def manifest(path)
-    
-  end
-
-  # Parse the data source in order to generate the manifest
-  def parse
-
+    if @mode == :production
+      @manifest.serve(path)
+    else
+      @manifest.parse(path) if !@manifest.provides?(path)  
+      @manifest.serve(path)
+    end
   end
 end
 

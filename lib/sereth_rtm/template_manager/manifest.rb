@@ -2,7 +2,8 @@
 #  Extensible for extra meta-tasks
 class Sereth::TemplateManager::Manifest
   class << self
-    def read
+    # Load the manifest using the DSL
+    def load
 
     end
 
@@ -29,5 +30,23 @@ class Sereth::TemplateManager::Manifest
         end
       end
     end
+
+    # Returns 
+    def serve(path)
+      inst = @db[path]
+      raise "Invalid manifest path [#{path}]" if !inst
+      return inst.source
+    end
+
+    def parse(path)
+      cur_entry = @insts[]
+      Context.get(:sprockets).source
+
+    end
+
+    def provides?
+
+    end
+
   end
 end
