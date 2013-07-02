@@ -32,18 +32,20 @@ Need a single view file per controller. All template selection happens in JS.
 ```slim
   / First tag must compile to javascript.
   coffee:
+    config = {}
     # Repeated calls to setup functions will be executed in order declared
-    loaded: (render_context) ->
+    loaded (render_context) ->
     # Executed when the template is first loaded into the render engine
       #   May be used to inject new dependences and subtask into the context
       #   Useful for pre-loading tempplates which may be necessary later
       render_context.inst_handlers # The handlers defined below
-    inst: (render_inst_context) ->
+    inst (container, locals, context) ->
     # Executed when the template is instantiated, must yield to render
-      render_inst_context.container # The DOM element to contain the actual template
-      render_inst_context.locals # The variables to be passed into the render stage
-      render_inst_context.yield() # Calls into the render stage
-    cleanup: (render_inst_context) ->
+      container # The DOM element to contain the actual template
+      locals # The variables to be passed into the render stage
+      yield(); # Calls into the render stage 
+      # ? no_yield(); # Tells the render stage not to yield at all
+    cleanup (render_inst_context) ->
     # Executed when the template is removed from the document.
   / All subsequent HTML will be converted into an EJS template
   .example

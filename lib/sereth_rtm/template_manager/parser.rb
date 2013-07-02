@@ -11,7 +11,7 @@ class Sereth::TemplateManager::Parser
   js_code
 
   class << self
-    addr_readable :parser
+    attr_reader :parser
     def extract_baseline
       baseline = @parser.parse(@baseline)
       @render_path = baseline.pointcut('"baseline"')
@@ -59,6 +59,14 @@ class Sereth::TemplateManager::Parser
 
   # Extract a top-level context handler from the parsed, and add it to a result queue
   def extract_handler(name, queue)
+    # Get through the coffeescript header
+    if @parsed.value.size == 1
+      # Likely a compiles script. Try to extract
+      @parsed.pointcut('(function () {})')
+    else
+
+    end
+    statement = @parsed.value # ExpressionStatement (Always)
 
   end
 

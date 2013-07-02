@@ -7,10 +7,11 @@ GIT
 PATH
   remote: .
   specs:
-    json_tunnel (2.0.0dev)
+    sereth_rtm (2.0.0dev)
       andand
       binding_of_caller
       coffee-script
+      hike
       json
       rake
       rkelly_for_reef
@@ -132,7 +133,6 @@ DEPENDENCIES
   execjs
   filewatcher
   jasmine
-  json_tunnel!
   mocha
   nokogiri
   pry
@@ -142,6 +142,7 @@ DEPENDENCIES
   rb-inotify
   rkelly_for_reef
   rspec
+  sereth_rtm!
   slim
   slim_assets
   spork

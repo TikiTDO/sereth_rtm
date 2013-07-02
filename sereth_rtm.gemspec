@@ -1,5 +1,5 @@
 $:.unshift File.expand_path("../lib", __FILE__)
-require 'rtm/version'
+require 'sereth_rtm/version'
 
 Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.0.0"
