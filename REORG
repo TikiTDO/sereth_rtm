@@ -1,0 +1,24 @@
+
+
+JS is a context of the server (possibly)
+Go do sereth util properly
+
+c+sereth_utils
+  Context - Bind code locations together
+
+
+sereth_web_client
+  Storage space (Access controlled) for things a web client would need 
+    JS scripts 
+    Templates
+  Gemspec integration of JS component?
+
+sereth_rtm
+  +json_tunnel
+    JS?
+  +template_manager
+    Generates JS files
+    Registers JS files with JSI
+    Registers access with JSI
+    JSI managers caching/sotrage/export
+  +rails_integration

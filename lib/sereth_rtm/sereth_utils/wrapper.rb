@@ -1,10 +1,10 @@
 =begin
-# Callback System 
-Implements around callbacks for any requested function.
+# Wrapper System 
+Implements around wrapper for any requested function.
 
 ## Usage:
 class Example
-  include Sereth::Callback
+  include Sereth::Wrapper
 
   around_method :method_name do |*args, &block| 
     print 'ar1'
@@ -19,9 +19,9 @@ end
 
 Example.new.method_name => ar1 method  ar2  
 =end
-module Sereth
-  # Enables around callbacks for a given object. Ruby 1.9 only.
-  module Callbacks
+module Sereth::Util
+  # Permantly enables around callbacks for a given object. Ruby 1.9 only.
+  module Wrapper
     def around_method(func_name, &callback)
       handler = Module.new
       handler.send :define_method, func_name, &callback

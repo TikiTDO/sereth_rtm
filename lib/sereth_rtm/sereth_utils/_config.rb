@@ -1,3 +1,19 @@
+# Provides basic data bindings between classes, instances, contexts, and info
+# Lets you bind args to configs
+class Sereth::Config
+
+  def bind(context)
+  end
+
+  def set(name, value)
+  end
+
+  class ConfigArgs
+  end
+
+end
+
+
 =begin
 # Configuration Module
 The configuration module allows tools to register configuraiton parameters, and then query 

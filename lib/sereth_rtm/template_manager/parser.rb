@@ -62,7 +62,8 @@ class Sereth::TemplateManager::Parser
     # Get through the coffeescript header
     if @parsed.value.size == 1
       # Likely a compiles script. Try to extract
-      @parsed.pointcut('(function () {})')
+      call_in = @parsed.pointcut('(function () {})')
+      call_in.matches
     else
 
     end

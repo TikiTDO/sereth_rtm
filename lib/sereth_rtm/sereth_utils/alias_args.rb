@@ -14,7 +14,7 @@ thing.method_name("a").inspect #=> ["a"]
 thing.method_changed("a").inspect #=> [1, 2, 3, "a"]
 =end
 
-module Sereth
+module Sereth::Util
   module AliasArgs
     # Register an alias before the method is defined. Not for performance critical use
     def alias_preload(target, source) 

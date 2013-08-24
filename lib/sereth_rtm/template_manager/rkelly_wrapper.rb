@@ -27,22 +27,78 @@ class Sereth::TemplateManager::RKellyWrapper
     @parent_position = parent_position
   end; public
 
+  # Query the current node for a (possibly indexed) value
+  def query(key, index = 0)
+    # Ensure the requested index actually exists
+    key = key.to_sym
+    return nil if !@node.respond_to?(key)
+    ret = @node.send(key)
+
+    # Return the queried value
+    return ret[index] if ret.is_a?(Array)
+    return nil if index != 0
+    return ret
+  end
+
+  # Check if a node is of a given RKelly type
+  def node_is?(node, name)
+    node.class.name == "RKelly::Nodes::#{name}Node"
+  end
+
   def source_element?
     return @node.is_a? RKelly::Nodes::SourceElementsNode
   end
 
-  # If this node 
+  def has_next_sibling?
+    @parent.has_next_child(@parent_position)
+  end
+
   def next_sibling
     return @parent.next_child(@parent_position) if @parent_position
     return nil
   end
 
+  def has_next_child?(position)
+    !query(positon.key, position.index + 1).nil?
+  end
+
   def next_child(position)
-    node = @node.send(position.key)[position.index + 1]
+    node = query(position.key, position.index + 1)
     return nil if !node
     return self.class.new(node)
   end
 
+  def go(key)
+    node = query(key)
+    return self.class.new(node, self, @@postion.new(key, 0))
+  end
+
+  # Retrieve the actual operational node (as opposed to organizational)
+  def get_actual
+  end
+
+  # Call Interface
+  def is_call?
+    node = @node
+    node = node.value if node_is?(node, "ExpressionStatement")
+    return node.is_a?(RKelly::Nodes::FunctionCallNode)
+  end
+
+  def call_name
+    node = @node
+    node = node.value if node_is?(node, "ExpressionStatement")
+    
+  end
+
+  def call_argument(number)
+
+  end
+
+  def to_function_body
+  end
+
+  def to_function_args
+  end
 
   # Move to this node's named child
   def down(index = nil)

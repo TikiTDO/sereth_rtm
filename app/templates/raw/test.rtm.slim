@@ -1,0 +1,13 @@
+coffee:
+  load (ctx) ->
+    console.log('load')
+  inst (container, locals, ctx_inst) ->
+    console.log('before yield')
+    # Container is an empty DOM element
+    yield
+    # Container now populated
+    console.log('after yield')
+  clean (ctx_inst) ->
+    console.log('clean')
+.template
+  <%= data %>

@@ -23,6 +23,7 @@ class Sereth::TemplateManager
       when 'load'
         store_call_body('load')
       when 'inst'
+        down_to_function_body
         replace_yield
         store_call('inst')
       when 'clean'

@@ -17,9 +17,17 @@ require_relative 'template_manager/core_parser_plugin'
 
 require_relative 'template_manager/generator'
 a = <<thing
-  (function (){}).call(this);
+  (function (){
+    code;
+  }).call(this);
 thing
 require 'pry'
 
 parsed = RKelly::Parser.new.parse(a)
 binding.pry
+
+# Expression Satament :value ->
+#   Function Call :value ->
+#     Thing that's being called
+#   Function Call :arguments
+#     Container for funciton being called

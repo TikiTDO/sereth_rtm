@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec
 gem 'rkelly_for_reef'
 gem 'nokogiri'
+gem 'websocket-rails'
 
 group :development, :test do
   # Debugger
